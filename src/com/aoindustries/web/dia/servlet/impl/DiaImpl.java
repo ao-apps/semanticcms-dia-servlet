@@ -75,7 +75,7 @@ final public class DiaImpl {
 		}
 	}
 
-	private static String getDiaOpenPath() {
+	public static String getDiaOpenPath() {
 		if(OpenFile.isWindows()) {
 			return WINDOWS_DIAW_PATH;
 		} else {
@@ -93,8 +93,8 @@ final public class DiaImpl {
 
 		String diaPath = pageRef.getPath();
 		// Strip extension if matches expected value
-		if(diaPath.toLowerCase(Locale.ROOT).endsWith(DiaExport.DIA_EXTENSION)) {
-			diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DIA_EXTENSION.length());
+		if(diaPath.toLowerCase(Locale.ROOT).endsWith(DiaExport.DOT_EXTENSION)) {
+			diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DOT_EXTENSION.length());
 		}
 		// Generate the temp filename
 		File tmpFile = new File(
@@ -221,8 +221,8 @@ final public class DiaImpl {
 				if(thumbnail != null) {
 					String diaPath = pageRef.getPath();
 					// Strip extension
-					if(!diaPath.endsWith(DiaExport.DIA_EXTENSION)) throw new ServerException("Unexpected file extension for diagram: " + diaPath);
-					diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DIA_EXTENSION.length());
+					if(!diaPath.endsWith(DiaExport.DOT_EXTENSION)) throw new ServerException("Unexpected file extension for diagram: " + diaPath);
+					diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DOT_EXTENSION.length());
 					StringBuilder urlPathSB = new StringBuilder();
 					urlPathSB
 						.append(request.getContextPath())

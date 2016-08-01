@@ -28,6 +28,7 @@ import com.aoindustries.web.dia.servlet.impl.DiaImpl;
 import com.aoindustries.web.page.Book;
 import com.aoindustries.web.page.PageRef;
 import com.aoindustries.web.page.servlet.BooksContextListener;
+import com.aoindustries.web.page.servlet.OpenFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,7 +39,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(DiaExportServlet.SERVLET_PATH+"/*")
+@WebServlet(
+	urlPatterns = DiaExportServlet.SERVLET_PATH+"/*",
+	loadOnStartup = 1
+)
 public class DiaExportServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -97,7 +101,7 @@ public class DiaExportServlet extends HttpServlet {
 		// Find book and path
 		PageRef pageRef;
 		{
-			String combinedPath = pathInfo.substring(0, sizeSepPos) + DiaExport.DIA_EXTENSION;
+			String combinedPath = pathInfo.substring(0, sizeSepPos) + DiaExport.DOT_EXTENSION;
 			Book book = BooksContextListener.getBook(getServletContext(), combinedPath);
 			if(book == null) return null;
 			pageRef = new PageRef(
@@ -138,6 +142,18 @@ public class DiaExportServlet extends HttpServlet {
 	}
 
 	@Override
+	public void init() throws ServletException {
+		OpenFile.addFileOpener(
+			getServletContext(),
+			resourceFile -> new String[] {
+				DiaImpl.getDiaOpenPath(),
+				resourceFile.getCanonicalPath()
+			},
+			DiaExport.EXTENSION
+		);
+	}
+
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		DiaExport thumbnail = getThumbnail(request);
 		if(thumbnail == null) {
@@ -152,5 +168,13 @@ public class DiaExportServlet extends HttpServlet {
 				FileUtils.copy(thumbnail.getTmpFile(), out);
 			}
 		}
+	}
+
+	@Override
+	public void destroy() {
+		OpenFile.removeFileOpener(
+			getServletContext(),
+			DiaExport.EXTENSION
+		);
 	}
 }

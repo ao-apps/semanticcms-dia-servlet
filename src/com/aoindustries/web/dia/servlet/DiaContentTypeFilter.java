@@ -33,8 +33,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
 @WebFilter(
-	urlPatterns = "*" + DiaExport.DIA_EXTENSION,
-	description = "Filter to add the missing content type for " + DiaExport.DIA_EXTENSION + " files."
+	urlPatterns = "*." + DiaExport.EXTENSION,
+	description = "Filter to add the missing content type for *." + DiaExport.EXTENSION + " files."
 )
 public class DiaContentTypeFilter implements Filter {
 
