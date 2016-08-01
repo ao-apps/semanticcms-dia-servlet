@@ -352,8 +352,8 @@ final public class DiaImpl {
 				if(export != null && PIXEL_DENSITIES.length > 1) {
 					assert resourceFile != null;
 					// Write links to the exports for higher pixel densities
-					long[] altLinkNums = new long[PIXEL_DENSITIES.length - 1];
-					for(int i=1; i<PIXEL_DENSITIES.length; i++) {
+					long[] altLinkNums = new long[PIXEL_DENSITIES.length];
+					for(int i=0; i<PIXEL_DENSITIES.length; i++) {
 						int pixelDensity = PIXEL_DENSITIES[i];
 						// Get the thumbnail image in alternate pixel density
 						DiaExport altExport = exportDiagram(
@@ -365,7 +365,7 @@ final public class DiaImpl {
 						// Write the a tag to additional pixel densities
 						out.append("<a id=\"" + ALT_LINK_ID_PREFIX);
 						long altLinkNum = idSequence.getNextSequenceValue();
-						altLinkNums[i - 1] = altLinkNum;
+						altLinkNums[i] = altLinkNum;
 						out.append(Long.toString(altLinkNum));
 						out.append("\" style=\"display:none\" href=\"");
 						final String altUrlPath = buildUrlPath(
@@ -385,7 +385,7 @@ final public class DiaImpl {
 							),
 							out
 						);
-						out.append("\">, x");
+						out.append("\">x");
 						encodeTextInXhtml(Integer.toString(pixelDensity), out);
 						out.append("</a>");
 					}
@@ -394,7 +394,7 @@ final public class DiaImpl {
 						+ "// <![CDATA[\n");
 					// hide alt links
 					//for(int i=1; i<PIXEL_DENSITIES.length; i++) {
-					//	long altLinkNum = altLinkNums[i - 1];
+					//	long altLinkNum = altLinkNums[i];
 					//	out
 					//		.append("document.getElementById(\"" + ALT_LINK_ID_PREFIX)
 					//		.append(Long.toString(altLinkNum))
@@ -402,24 +402,43 @@ final public class DiaImpl {
 					//}
 					// select best based on device pixel ratio
 					out.append("if(window.devicePixelRatio) {\n");
+					// Closure for locally scoped variables
+					out.append("\t(function () {\n");
 					// out.append("\twindow.alert(\"devicePixelRatio=\" + window.devicePixelRatio);\n");
-					for(int i=PIXEL_DENSITIES.length - 1; i >= 1; i--) {
-						long altLinkNum = altLinkNums[i - 1];
-						int pixelDensity = PIXEL_DENSITIES[i];
-						out.append('\t');
+					// Function to update src
+					out.append("\t\tfunction updateImageSrc() {\n");
+					for(int i=PIXEL_DENSITIES.length - 1; i >= 0; i--) {
+						long altLinkNum = altLinkNums[i];
+						out.append("\t\t\t");
 						if(i != (PIXEL_DENSITIES.length - 1)) out.append("else ");
-						out
-							.append("if(window.devicePixelRatio >= ")
-							.append(Integer.toString(pixelDensity))
-							.append(") {\n"
-								+ "\t\tdocument.getElementById(\"" + ALT_LINK_ID_PREFIX)
+						if(i > 0) {
+							out
+								.append("if(window.devicePixelRatio > ")
+								.append(Integer.toString(PIXEL_DENSITIES[i-1]))
+								.append(") ");
+						}
+						out.append("{\n"
+								+ "\t\t\t\tdocument.getElementById(\"" + ALT_LINK_ID_PREFIX)
 							.append(Long.toString(imgId))
 							.append("\").src = document.getElementById(\"" + ALT_LINK_ID_PREFIX)
 							.append(Long.toString(altLinkNum))
 							.append("\").getAttribute(\"href\");\n"
-								+ "\t}\n");
+								+ "\t\t\t}\n");
 					}
-					out.append("}\n"
+					out.append("\t\t}\n"
+						// Perform initial setup
+						+ "\t\tupdateImageSrc();\n");
+					// Change image source when pixel ratio changes
+					out.append("\t\tif(window.matchMedia) {\n");
+					for(int i=PIXEL_DENSITIES.length - 1; i >= 1; i--) {
+						int pixelDensity = PIXEL_DENSITIES[i];
+						out.append("\t\t\twindow.matchMedia(\"screen and (min-resolution: ").append(Integer.toString(pixelDensity)).append("dppx)\").addListener(function(e) {\n"
+								+ "\t\t\t\tupdateImageSrc();\n"
+								+ "\t\t\t});\n");
+					}
+					out.append("\t\t}\n"
+						+ "\t})();\n"
+						+ "}\n"
 						+ "// ]]>\n"
 						+ "</script>");
 				}
