@@ -22,24 +22,41 @@
  */
 package com.aoindustries.web.dia.servlet.impl;
 
+import com.aoindustries.awt.image.ImageSizeCache;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
+import com.aoindustries.io.FileUtils;
+import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.net.UrlUtils;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import com.aoindustries.web.dia.DiaExport;
 import com.aoindustries.web.dia.servlet.DiaExportServlet;
 import com.aoindustries.web.page.PageRef;
 import com.aoindustries.web.page.servlet.CaptureLevel;
+import com.aoindustries.web.page.servlet.OpenFile;
 import com.aoindustries.web.page.servlet.PageRefResolver;
 import com.aoindustries.web.page.servlet.impl.LinkImpl;
+import java.awt.Dimension;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
 import java.rmi.ServerException;
+import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 final public class DiaImpl {
+
+	private static final String LINUX_DIA_PATH = "/usr/bin/dia";
+
+	private static final String WINDOWS_DIA_PATH = "C:\\Program Files (x86)\\Dia\\bin\\dia.exe";
+
+	private static final String WINDOWS_DIAW_PATH = "C:\\Program Files (x86)\\Dia\\bin\\diaw.exe";
+
+	private static final String TEMP_SUBDIR = DiaExport.class.getName();
 
 	private static final String MISSING_IMAGE_PATH = "/ao-web-dia-servlet/images/missing-image.jpg";
 	private static final int MISSING_IMAGE_WIDTH = 225;
@@ -49,6 +66,124 @@ final public class DiaImpl {
 	public static final char EMPTY_SIZE = '_';
 	public static final char DIMENSION_SEPARATOR = 'x';
 	public static final String PNG_EXTENSION = ".png";
+
+	private static String getDiaExportPath() {
+		if(OpenFile.isWindows()) {
+			return WINDOWS_DIA_PATH;
+		} else {
+			return LINUX_DIA_PATH;
+		}
+	}
+
+	private static String getDiaOpenPath() {
+		if(OpenFile.isWindows()) {
+			return WINDOWS_DIAW_PATH;
+		} else {
+			return LINUX_DIA_PATH;
+		}
+	}
+
+	public static DiaExport exportDiagram(
+		PageRef pageRef,
+		Integer width,
+		Integer height,
+		File tmpDir
+	) throws FileNotFoundException, IOException {
+		File diaFile = pageRef.getResourceFile(true, true);
+
+		String diaPath = pageRef.getPath();
+		// Strip extension if matches expected value
+		if(diaPath.toLowerCase(Locale.ROOT).endsWith(DiaExport.DIA_EXTENSION)) {
+			diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DIA_EXTENSION.length());
+		}
+		// Generate the temp filename
+		File tmpFile = new File(
+			tmpDir,
+			TEMP_SUBDIR
+				+ pageRef.getBookPrefix().replace('/', File.separatorChar)
+				+ diaPath.replace('/', File.separatorChar)
+				+ "-"
+				+ (width==null ? "_" : width.toString())
+				+ "x"
+				+ (height==null ? "_" : height.toString())
+				+ ".png"
+		);
+		// Make temp directory if needed (and all parents)
+		tmpDir = tmpFile.getParentFile();
+		if(!tmpDir.exists()) FileUtils.mkdirs(tmpDir);
+		// Re-export when missing or timestamps indicate needs recreated
+		if(!tmpFile.exists() || diaFile.lastModified() >= tmpFile.lastModified()) {
+			// Determine size for scaling
+			final String sizeParam;
+			if(width==null) {
+				if(height==null) {
+					sizeParam = null;
+				} else {
+					sizeParam = "x" + height;
+				}
+			} else {
+				if(height==null) {
+					sizeParam = width + "x";
+				} else {
+					sizeParam = width + "x" + height;
+				}
+			}
+			// Build the command
+			final String diaExePath = getDiaExportPath();
+			final String[] command;
+			if(sizeParam == null) {
+				command = new String[] {
+					diaExePath,
+					"--export=" + tmpFile.getCanonicalPath(),
+					"--filter=png",
+					"--log-to-stderr",
+					diaFile.getCanonicalPath()
+				};
+			} else {
+				command = new String[] {
+					diaExePath,
+					"--export=" + tmpFile.getCanonicalPath(),
+					"--filter=png",
+					"--size=" + sizeParam,
+					"--log-to-stderr",
+					diaFile.getCanonicalPath()
+				};
+			}
+			// Export using dia
+			ProcessResult result = ProcessResult.exec(command);
+			int exitVal = result.getExitVal();
+			if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
+			if(!OpenFile.isWindows()) {
+				// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
+				// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
+				String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
+				// Read the standard error, if any one line matches the expected line, then it is OK
+				// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
+				boolean foundNormalOutput = false;
+				String stderr = result.getStderr();
+				try (BufferedReader errIn = new BufferedReader(new StringReader(stderr))) {
+					String line;
+					while((line = errIn.readLine())!=null) {
+						if(line.equals(normalOutput)) {
+							foundNormalOutput = true;
+							break;
+						}
+					}
+				}
+				if(!foundNormalOutput) {
+					throw new IOException(diaExePath + ": " + stderr);
+				}
+			}
+		}
+		// Get actual dimensions
+		Dimension pngSize = ImageSizeCache.getImageSize(tmpFile);
+		
+		return new DiaExport(
+			tmpFile,
+			pngSize.width,
+			pngSize.height
+		);
+	}
 
 	public static void writeDiaImpl(
 		ServletContext servletContext,
@@ -73,7 +208,7 @@ final public class DiaImpl {
 				DiaExport thumbnail =
 					resourceFile==null
 					? null
-					: DiaExport.exportDiagram(
+					: exportDiagram(
 						pageRef,
 						width==0 ? null : (width * DiaExportServlet.OVERSAMPLING),
 						height==0 ? null : (height * DiaExportServlet.OVERSAMPLING),

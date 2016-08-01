@@ -110,7 +110,7 @@ public class DiaExportServlet extends HttpServlet {
 		if(width==null && height==null) width = DEFAULT_WIDTH * OVERSAMPLING;
 		// Get the thumbnail image
 		try {
-			return DiaExport.exportDiagram(
+			return DiaImpl.exportDiagram(
 				pageRef,
 				width,
 				height,
