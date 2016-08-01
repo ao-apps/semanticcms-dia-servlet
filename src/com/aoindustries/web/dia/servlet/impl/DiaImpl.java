@@ -90,6 +90,7 @@ final public class DiaImpl {
 	private static final int[] PIXEL_DENSITIES = {
 		1,
 		2,
+		3,
 		4
 	};
 
@@ -401,6 +402,7 @@ final public class DiaImpl {
 					//}
 					// select best based on device pixel ratio
 					out.append("if(window.devicePixelRatio) {\n");
+					// out.append("\twindow.alert(\"devicePixelRatio=\" + window.devicePixelRatio);\n");
 					for(int i=PIXEL_DENSITIES.length - 1; i >= 1; i--) {
 						long altLinkNum = altLinkNums[i - 1];
 						int pixelDensity = PIXEL_DENSITIES[i];
