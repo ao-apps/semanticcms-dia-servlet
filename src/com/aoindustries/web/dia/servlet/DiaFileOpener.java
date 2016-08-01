@@ -29,6 +29,9 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+/**
+ * @see  OpenFile.FileOpener
+ */
 @WebListener(
 	"Registers a file opener for all *." + DiaExport.EXTENSION + " files."
 )
