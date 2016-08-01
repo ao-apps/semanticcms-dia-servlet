@@ -24,10 +24,13 @@ package com.aoindustries.web.dia.servlet.impl;
 
 import com.aoindustries.awt.image.ImageSizeCache;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
+import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.net.UrlUtils;
 import com.aoindustries.servlet.http.LastModifiedServlet;
+import com.aoindustries.util.Sequence;
+import com.aoindustries.util.UnsynchronizedSequence;
 import com.aoindustries.web.dia.DiaExport;
 import com.aoindustries.web.dia.servlet.DiaExportServlet;
 import com.aoindustries.web.page.PageRef;
@@ -41,7 +44,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.rmi.ServerException;
 import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -66,6 +68,30 @@ final public class DiaImpl {
 	public static final char EMPTY_SIZE = '_';
 	public static final char DIMENSION_SEPARATOR = 'x';
 	public static final String PNG_EXTENSION = ".png";
+
+	/**
+	 * The request key used to ensure per-request unique element IDs.
+	 */
+	private static final String ID_SEQUENCE_REQUEST_ATTRIBUTE_NAME = DiaImpl.class.getName() + ".idSequence";
+
+	/**
+	 * The alt link ID prefix.
+	 */
+	private static final String ALT_LINK_ID_PREFIX = "ao-web-dia-servlet-alt-pixel-ratio-";
+
+	/**
+	 * The default width when neither width nor height provided.
+	 */
+	private static final int DEFAULT_WIDTH = 200;
+
+	/**
+	 * The supported pixel densities, these must be ordered from lowest to highest.  The first is the default.
+	 */
+	private static final int[] PIXEL_DENSITIES = {
+		1,
+		2,
+		4
+	};
 
 	private static String getDiaExportPath() {
 		if(OpenFile.isWindows()) {
@@ -185,6 +211,49 @@ final public class DiaImpl {
 		);
 	}
 
+	private static String buildUrlPath(
+		HttpServletRequest request,
+		PageRef pageRef,
+		int width,
+		int height,
+		int pixelDensity,
+		DiaExport export
+	) throws ServletException {
+		String diaPath = pageRef.getPath();
+		// Strip extension
+		if(!diaPath.endsWith(DiaExport.DOT_EXTENSION)) throw new ServletException("Unexpected file extension for diagram: " + diaPath);
+		diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DOT_EXTENSION.length());
+		StringBuilder urlPath = new StringBuilder();
+		urlPath
+			.append(request.getContextPath())
+			.append(DiaExportServlet.SERVLET_PATH)
+			.append(pageRef.getBookPrefix())
+			.append(diaPath)
+			.append(SIZE_SEPARATOR);
+		if(width == 0) {
+			urlPath.append(EMPTY_SIZE);
+		} else {
+			urlPath.append(width * pixelDensity);
+		}
+		urlPath.append(DIMENSION_SEPARATOR);
+		if(height == 0) {
+			urlPath.append(EMPTY_SIZE);
+		} else {
+			urlPath.append(height * pixelDensity);
+		}
+		urlPath.append(PNG_EXTENSION);
+		// Check for header disabling auto last modified
+		if(!"false".equalsIgnoreCase(request.getHeader(LastModifiedServlet.LAST_MODIFIED_HEADER_NAME))) {
+			urlPath
+				.append('?')
+				.append(LastModifiedServlet.LAST_MODIFIED_PARAMETER_NAME)
+				.append('=')
+				.append(LastModifiedServlet.encodeLastModified(export.getTmpFile().lastModified()))
+			;
+		}
+		return urlPath.toString();
+	}
+
 	public static void writeDiaImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
@@ -202,56 +271,38 @@ final public class DiaImpl {
 			if(captureLevel == CaptureLevel.BODY) {
 				final String responseEncoding = response.getCharacterEncoding();
 				// Use default width when neither provided
-				if(width==0 && height==0) width = DiaExportServlet.DEFAULT_WIDTH;
+				if(width==0 && height==0) width = DEFAULT_WIDTH;
 				File resourceFile = pageRef.getResourceFile(false, true);
-				// Get the thumbnail image
-				DiaExport thumbnail =
+				// Get the thumbnail image in default pixel density
+				DiaExport export =
 					resourceFile==null
 					? null
 					: exportDiagram(
 						pageRef,
-						width==0 ? null : (width * DiaExportServlet.OVERSAMPLING),
-						height==0 ? null : (height * DiaExportServlet.OVERSAMPLING),
+						width==0 ? null : (width * PIXEL_DENSITIES[0]),
+						height==0 ? null : (height * PIXEL_DENSITIES[0]),
 						(File)servletContext.getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/)
 					)
 				;
+				// Find id sequence
+				Sequence idSequence = (Sequence)request.getAttribute(ID_SEQUENCE_REQUEST_ATTRIBUTE_NAME);
+				if(idSequence == null) {
+					idSequence = new UnsynchronizedSequence();
+					request.setAttribute(ID_SEQUENCE_REQUEST_ATTRIBUTE_NAME, idSequence);
+				}
 				// Write the img tag
-				out.append("<img src=\"");
+				long imgId = idSequence.getNextSequenceValue();
+				out.append("<img id=\"" + ALT_LINK_ID_PREFIX).append(Long.toString(imgId)).append("\" src=\"");
 				final String urlPath;
-				if(thumbnail != null) {
-					String diaPath = pageRef.getPath();
-					// Strip extension
-					if(!diaPath.endsWith(DiaExport.DOT_EXTENSION)) throw new ServerException("Unexpected file extension for diagram: " + diaPath);
-					diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DOT_EXTENSION.length());
-					StringBuilder urlPathSB = new StringBuilder();
-					urlPathSB
-						.append(request.getContextPath())
-						.append(DiaExportServlet.SERVLET_PATH)
-						.append(pageRef.getBookPrefix())
-						.append(diaPath)
-						.append(SIZE_SEPARATOR);
-					if(width == 0) {
-						urlPathSB.append(EMPTY_SIZE);
-					} else {
-						urlPathSB.append(width * DiaExportServlet.OVERSAMPLING);
-					}
-					urlPathSB.append(DIMENSION_SEPARATOR);
-					if(height == 0) {
-						urlPathSB.append(EMPTY_SIZE);
-					} else {
-						urlPathSB.append(height * DiaExportServlet.OVERSAMPLING);
-					}
-					urlPathSB.append(PNG_EXTENSION);
-					// Check for header disabling auto last modified
-					if(!"false".equalsIgnoreCase(request.getHeader(LastModifiedServlet.LAST_MODIFIED_HEADER_NAME))) {
-						urlPathSB
-							.append('?')
-							.append(LastModifiedServlet.LAST_MODIFIED_PARAMETER_NAME)
-							.append('=')
-							.append(LastModifiedServlet.encodeLastModified(thumbnail.getTmpFile().lastModified()))
-						;
-					}
-					urlPath = urlPathSB.toString();
+				if(export != null) {
+					urlPath = buildUrlPath(
+						request,
+						pageRef,
+						width,
+						height,
+						PIXEL_DENSITIES[0],
+						export
+					);
 				} else {
 					urlPath =
 						request.getContextPath()
@@ -270,8 +321,8 @@ final public class DiaImpl {
 				out.append("\" width=\"");
 				encodeTextInXhtmlAttribute(
 					Integer.toString(
-						thumbnail!=null
-						? (thumbnail.getWidth() / DiaExportServlet.OVERSAMPLING)
+						export!=null
+						? (export.getWidth() / PIXEL_DENSITIES[0])
 						: width!=0
 						? width
 						: (MISSING_IMAGE_WIDTH * height / MISSING_IMAGE_HEIGHT)
@@ -281,8 +332,8 @@ final public class DiaImpl {
 				out.append("\" height=\"");
 				encodeTextInXhtmlAttribute(
 					Integer.toString(
-						thumbnail!=null
-						? (thumbnail.getHeight() / DiaExportServlet.OVERSAMPLING)
+						export!=null
+						? (export.getHeight() / PIXEL_DENSITIES[0])
 						: height!=0
 						? height
 						: (MISSING_IMAGE_HEIGHT * width / MISSING_IMAGE_WIDTH)
@@ -296,6 +347,80 @@ final public class DiaImpl {
 					encodeTextInXhtmlAttribute(resourceFile.getName(), out);
 				}
 				out.append("\" />");
+
+				if(export != null && PIXEL_DENSITIES.length > 1) {
+					assert resourceFile != null;
+					// Write links to the exports for higher pixel densities
+					long[] altLinkNums = new long[PIXEL_DENSITIES.length - 1];
+					for(int i=1; i<PIXEL_DENSITIES.length; i++) {
+						int pixelDensity = PIXEL_DENSITIES[i];
+						// Get the thumbnail image in alternate pixel density
+						DiaExport altExport = exportDiagram(
+							pageRef,
+							width==0 ? null : (width * pixelDensity),
+							height==0 ? null : (height * pixelDensity),
+							(File)servletContext.getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/)
+						);
+						// Write the a tag to additional pixel densities
+						out.append("<a id=\"" + ALT_LINK_ID_PREFIX);
+						long altLinkNum = idSequence.getNextSequenceValue();
+						altLinkNums[i - 1] = altLinkNum;
+						out.append(Long.toString(altLinkNum));
+						out.append("\" style=\"display:none\" href=\"");
+						final String altUrlPath = buildUrlPath(
+							request,
+							pageRef,
+							width,
+							height,
+							pixelDensity,
+							altExport
+						);
+						encodeTextInXhtmlAttribute(
+							response.encodeURL(
+								UrlUtils.encodeUrlPath(
+									altUrlPath,
+									responseEncoding
+								)
+							),
+							out
+						);
+						out.append("\">, x");
+						encodeTextInXhtml(Integer.toString(pixelDensity), out);
+						out.append("</a>");
+					}
+					// Write script to hide alt links and select best based on device pixel ratio
+					out.append("<script type=\"text/javascript\">\n"
+						+ "// <![CDATA[\n");
+					// hide alt links
+					//for(int i=1; i<PIXEL_DENSITIES.length; i++) {
+					//	long altLinkNum = altLinkNums[i - 1];
+					//	out
+					//		.append("document.getElementById(\"" + ALT_LINK_ID_PREFIX)
+					//		.append(Long.toString(altLinkNum))
+					//		.append("\").style.display = \"none\";\n");
+					//}
+					// select best based on device pixel ratio
+					out.append("if(window.devicePixelRatio) {\n");
+					for(int i=PIXEL_DENSITIES.length - 1; i >= 1; i--) {
+						long altLinkNum = altLinkNums[i - 1];
+						int pixelDensity = PIXEL_DENSITIES[i];
+						out.append('\t');
+						if(i != (PIXEL_DENSITIES.length - 1)) out.append("else ");
+						out
+							.append("if(window.devicePixelRatio >= ")
+							.append(Integer.toString(pixelDensity))
+							.append(") {\n"
+								+ "\t\tdocument.getElementById(\"" + ALT_LINK_ID_PREFIX)
+							.append(Long.toString(imgId))
+							.append("\").src = document.getElementById(\"" + ALT_LINK_ID_PREFIX)
+							.append(Long.toString(altLinkNum))
+							.append("\").getAttribute(\"href\");\n"
+								+ "\t}\n");
+					}
+					out.append("}\n"
+						+ "// ]]>\n"
+						+ "</script>");
+				}
 			}
 		}
 	}

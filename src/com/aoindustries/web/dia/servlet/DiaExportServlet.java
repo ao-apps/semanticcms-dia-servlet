@@ -45,14 +45,6 @@ public class DiaExportServlet extends HttpServlet {
 
 	public static final String SERVLET_PATH = "/ao-web-dia-servlet/dia-export";
 
-	public static final int DEFAULT_WIDTH = 200;
-
-	/**
-	 * Performing an oversampling for high-resolution devices and zoom 
-	 * TODO: Get from devicePixelRatio?: http://stackoverflow.com/questions/15234519/detect-retina-display-in-php
-	 */
-	public static final int OVERSAMPLING = 1; // Was 2, but clearer on a typical browser at 1
-
 	/**
 	 * Gets the dia export or null when not found.
 	 */
@@ -94,6 +86,8 @@ public class DiaExportServlet extends HttpServlet {
 			}
 		}
 		//log("width=" +width);
+		// Must have at least width or height to continue
+		if(width==null && height==null) return null;
 		// Find book and path
 		PageRef pageRef;
 		{
@@ -106,8 +100,6 @@ public class DiaExportServlet extends HttpServlet {
 			);
 		}
 
-		// Use default width when neither provided
-		if(width==null && height==null) width = DEFAULT_WIDTH * OVERSAMPLING;
 		// Get the thumbnail image
 		try {
 			return DiaImpl.exportDiagram(
