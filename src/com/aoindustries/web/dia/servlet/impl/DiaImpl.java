@@ -430,9 +430,9 @@ final public class DiaImpl {
 						+ "\t\tupdateImageSrc();\n");
 					// Change image source when pixel ratio changes
 					out.append("\t\tif(window.matchMedia) {\n");
-					for(int i=PIXEL_DENSITIES.length - 1; i >= 1; i--) {
+					for(int i=0; i<PIXEL_DENSITIES.length; i++) {
 						int pixelDensity = PIXEL_DENSITIES[i];
-						out.append("\t\t\twindow.matchMedia(\"screen and (min-resolution: ").append(Integer.toString(pixelDensity)).append("dppx)\").addListener(function(e) {\n"
+						out.append("\t\t\twindow.matchMedia(\"screen and (max-resolution: ").append(Integer.toString(pixelDensity)).append("dppx)\").addListener(function(e) {\n"
 								+ "\t\t\t\tupdateImageSrc();\n"
 								+ "\t\t\t});\n");
 					}
