@@ -22,24 +22,23 @@
  */
 package com.semanticcms.dia.servlet;
 
+import com.aoindustries.io.buffer.BufferResult;
+import com.aoindustries.io.buffer.BufferWriter;
+import com.aoindustries.io.buffer.SegmentedWriter;
+import com.semanticcms.core.model.ElementContext;
+import com.semanticcms.core.servlet.CaptureLevel;
+import com.semanticcms.core.servlet.Element;
 import com.semanticcms.core.servlet.PageContext;
 import com.semanticcms.dia.servlet.impl.DiaImpl;
 import java.io.IOException;
+import java.io.Writer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.SkipPageException;
 
-public class Dia {
-
-	private final ServletContext servletContext;
-	private final HttpServletRequest request;
-	private final HttpServletResponse response;
-	private final String path;
-
-	private String book;
-	private int width;
-	private int height;
+public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 
 	public Dia(
 		ServletContext servletContext,
@@ -47,10 +46,13 @@ public class Dia {
 		HttpServletResponse response,
 		String path
 	) {
-		this.servletContext = servletContext;
-		this.request = request;
-		this.response = response;
-		this.path = path;
+		super(
+			servletContext,
+			request,
+			response,
+			new com.semanticcms.dia.model.Dia()
+		);
+		element.setPath(path);
 	}
 
 	public Dia(
@@ -61,11 +63,11 @@ public class Dia {
 		String path
 	) {
 		this(servletContext, request, response, path);
-		this.book = book;
+		element.setBook(book);
 	}
 
 	/**
-	 * Creates a new dia in the current page context.
+	 * Creates a new diagram in the current page context.
 	 *
 	 * @see  PageContext
 	 */
@@ -79,40 +81,62 @@ public class Dia {
 	}
 
 	/**
-	 * Creates a new dia in the current page context.
+	 * Creates a new diagram in the current page context.
 	 *
 	 * @see  PageContext
 	 */
 	public Dia(String book, String path) {
 		this(path);
-		this.book = book;
+		element.setBook(book);
+	}
+
+	@Override
+	public Dia id(String id) {
+		super.id(id);
+		return this;
+	}
+
+	public Dia label(String label) {
+		element.setLabel(label);
+		return this;
 	}
 
 	public Dia book(String book) {
-		this.book = book;
+		element.setBook(book);
 		return this;
 	}
 
 	public Dia width(int width) {
-		this.width = width;
+		element.setWidth(width);
 		return this;
 	}
 
 	public Dia height(int height) {
-		this.height = height;
+		element.setHeight(height);
 		return this;
 	}
 
-	public void invoke() throws ServletException, IOException {
-		DiaImpl.writeDiaImpl(
-			servletContext,
-			request,
-			response,
-			response.getWriter(),
-			book,
-			path,
-			width,
-			height
-		);
+	private BufferResult writeMe;
+	@Override
+	protected void doBody(CaptureLevel captureLevel, Body<? super com.semanticcms.dia.model.Dia> body) throws ServletException, IOException, SkipPageException {
+		super.doBody(captureLevel, body);
+		BufferWriter out = (captureLevel == CaptureLevel.BODY) ? new SegmentedWriter() : null;
+		try {
+			DiaImpl.writeDiaImpl(
+				servletContext,
+				request,
+				response,
+				out,
+				element
+			);
+		} finally {
+			if(out != null) out.close();
+		}
+		writeMe = out==null ? null : out.getResult();
+	}
+
+	@Override
+	public void writeTo(Writer out, ElementContext context) throws IOException {
+		if(writeMe != null) writeMe.writeTo(out);
 	}
 }
