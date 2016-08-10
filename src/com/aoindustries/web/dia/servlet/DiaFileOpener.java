@@ -24,7 +24,7 @@ package com.aoindustries.web.dia.servlet;
 
 import com.aoindustries.web.dia.DiaExport;
 import com.aoindustries.web.dia.servlet.impl.DiaImpl;
-import com.aoindustries.web.page.servlet.OpenFile;
+import com.semanticcms.core.servlet.OpenFile;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;

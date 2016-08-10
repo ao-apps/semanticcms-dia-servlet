@@ -23,7 +23,7 @@
 package com.aoindustries.web.dia.servlet;
 
 import com.aoindustries.web.dia.servlet.impl.DiaImpl;
-import com.aoindustries.web.page.servlet.PageContext;
+import com.semanticcms.core.servlet.PageContext;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
