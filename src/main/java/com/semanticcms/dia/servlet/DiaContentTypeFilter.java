@@ -22,7 +22,7 @@
  */
 package com.semanticcms.dia.servlet;
 
-import com.semanticcms.dia.model.DiaExport;
+import com.semanticcms.dia.model.Dia;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -33,8 +33,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
 @WebFilter(
-	urlPatterns = "*." + DiaExport.EXTENSION,
-	description = "Filter to add the missing content type for *." + DiaExport.EXTENSION + " files."
+	urlPatterns = "*." + Dia.EXTENSION,
+	description = "Filter to add the missing content type for *." + Dia.EXTENSION + " files."
 )
 public class DiaContentTypeFilter implements Filter {
 
