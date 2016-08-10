@@ -23,7 +23,7 @@
 package com.semanticcms.dia.servlet;
 
 import com.semanticcms.core.servlet.OpenFile;
-import com.semanticcms.dia.model.DiaExport;
+import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.impl.DiaImpl;
 import java.io.File;
 import java.io.IOException;
@@ -35,14 +35,13 @@ import javax.servlet.annotation.WebListener;
  * @see  OpenFile.FileOpener
  */
 @WebListener(
-	"Registers a file opener for all *." + DiaExport.EXTENSION + " files."
+	"Registers a file opener for all *." + Dia.EXTENSION + " files."
 )
 public class DiaFileOpener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		OpenFile.addFileOpener(
-			sce.getServletContext(),
+		OpenFile.addFileOpener(sce.getServletContext(),
 			// Java 1.8: Lambda here
 			new OpenFile.FileOpener() {
 				@Override
@@ -53,15 +52,14 @@ public class DiaFileOpener implements ServletContextListener {
 					};
 				}
 			},
-			DiaExport.EXTENSION
+			Dia.EXTENSION
 		);
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		OpenFile.removeFileOpener(
-			sce.getServletContext(),
-			DiaExport.EXTENSION
+		OpenFile.removeFileOpener(sce.getServletContext(),
+			Dia.EXTENSION
 		);
 	}
 }
