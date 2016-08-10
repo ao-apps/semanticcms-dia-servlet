@@ -23,6 +23,7 @@
 package com.semanticcms.dia.servlet.impl;
 
 import com.aoindustries.awt.image.ImageSizeCache;
+import static com.aoindustries.encoding.TextInJavaScriptEncoder.encodeTextInJavaScript;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.io.FileUtils;
@@ -34,9 +35,9 @@ import com.aoindustries.util.UnsynchronizedSequence;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.OpenFile;
+import com.semanticcms.core.servlet.PageIndex;
 import com.semanticcms.core.servlet.PageRefResolver;
-import com.semanticcms.core.servlet.impl.LinkImpl;
-import com.semanticcms.dia.model.DiaExport;
+import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.DiaExportServlet;
 import java.awt.Dimension;
 import java.io.BufferedReader;
@@ -120,8 +121,8 @@ final public class DiaImpl {
 
 		String diaPath = pageRef.getPath();
 		// Strip extension if matches expected value
-		if(diaPath.toLowerCase(Locale.ROOT).endsWith(DiaExport.DOT_EXTENSION)) {
-			diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DOT_EXTENSION.length());
+		if(diaPath.toLowerCase(Locale.ROOT).endsWith(Dia.DOT_EXTENSION)) {
+			diaPath = diaPath.substring(0, diaPath.length() - Dia.DOT_EXTENSION.length());
 		}
 		// Generate the temp filename
 		File tmpFile = new File(
@@ -225,8 +226,8 @@ final public class DiaImpl {
 	) throws ServletException {
 		String diaPath = pageRef.getPath();
 		// Strip extension
-		if(!diaPath.endsWith(DiaExport.DOT_EXTENSION)) throw new ServletException("Unexpected file extension for diagram: " + diaPath);
-		diaPath = diaPath.substring(0, diaPath.length() - DiaExport.DOT_EXTENSION.length());
+		if(!diaPath.endsWith(Dia.DOT_EXTENSION)) throw new ServletException("Unexpected file extension for diagram: " + diaPath);
+		diaPath = diaPath.substring(0, diaPath.length() - Dia.DOT_EXTENSION.length());
 		StringBuilder urlPath = new StringBuilder();
 		urlPath
 			.append(request.getContextPath())
@@ -263,18 +264,17 @@ final public class DiaImpl {
 		HttpServletRequest request,
 		HttpServletResponse response,
 		Appendable out,
-		String book,
-		String path,
-		int width,
-		int height
+		Dia dia
 	) throws ServletException, IOException {
 		// Get the current capture state
 		final CaptureLevel captureLevel = CaptureLevel.getCaptureLevel(request);
 		if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
-			PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, book, path);
+			PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, dia.getBook(), dia.getPath());
 			if(captureLevel == CaptureLevel.BODY) {
 				final String responseEncoding = response.getCharacterEncoding();
 				// Use default width when neither provided
+				int width = dia.getWidth();
+				int height = dia.getHeight();
 				if(width==0 && height==0) width = DEFAULT_WIDTH;
 				File resourceFile = pageRef.getResourceFile(false, true);
 				// Get the thumbnail image in default pixel density
@@ -295,8 +295,10 @@ final public class DiaImpl {
 					request.setAttribute(ID_SEQUENCE_REQUEST_ATTRIBUTE_NAME, idSequence);
 				}
 				// Write the img tag
-				long imgId = idSequence.getNextSequenceValue();
-				out.append("<img id=\"" + ALT_LINK_ID_PREFIX).append(Long.toString(imgId)).append("\" src=\"");
+				String refId = PageIndex.getRefIdInPage(servletContext, request, dia.getPage(), dia.getId());
+				out.append("<img id=\"");
+				encodeTextInXhtmlAttribute(refId, out);
+				out.append("\" src=\"");
 				final String urlPath;
 				if(export != null) {
 					urlPath = buildUrlPath(
@@ -345,11 +347,12 @@ final public class DiaImpl {
 					out
 				);
 				out.append("\" alt=\"");
-				if(resourceFile == null) {
-					LinkImpl.writeBrokenPathInXhtmlAttribute(pageRef, out);
-				} else {
-					encodeTextInXhtmlAttribute(resourceFile.getName(), out);
-				}
+				//if(resourceFile == null) {
+				//	LinkImpl.writeBrokenPathInXhtmlAttribute(pageRef, out);
+				//} else {
+				//	encodeTextInXhtmlAttribute(resourceFile.getName(), out);
+				//}
+				encodeTextInXhtmlAttribute(dia.getLabel(), out);
 				out.append("\" />");
 
 				if(export != null && PIXEL_DENSITIES.length > 1) {
@@ -421,8 +424,9 @@ final public class DiaImpl {
 								.append(") ");
 						}
 						out.append("{\n"
-								+ "\t\t\t\tdocument.getElementById(\"" + ALT_LINK_ID_PREFIX)
-							.append(Long.toString(imgId))
+								+ "\t\t\t\tdocument.getElementById(\"");
+						encodeTextInJavaScript(refId, out);
+						out
 							.append("\").src = document.getElementById(\"" + ALT_LINK_ID_PREFIX)
 							.append(Long.toString(altLinkNum))
 							.append("\").getAttribute(\"href\");\n"
