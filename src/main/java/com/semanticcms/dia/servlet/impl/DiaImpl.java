@@ -1,26 +1,26 @@
 /*
- * ao-web-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
+ * semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
  * Copyright (C) 2013, 2014, 2015, 2016  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
  *
- * This file is part of ao-web-dia-servlet.
+ * This file is part of semanticcms-dia-servlet.
  *
- * ao-web-dia-servlet is free software: you can redistribute it and/or modify
+ * semanticcms-dia-servlet is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * ao-web-dia-servlet is distributed in the hope that it will be useful,
+ * semanticcms-dia-servlet is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with ao-web-dia-servlet.  If not, see <http://www.gnu.org/licenses/>.
+ * along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.web.dia.servlet.impl;
+package com.semanticcms.dia.servlet.impl;
 
 import com.aoindustries.awt.image.ImageSizeCache;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
@@ -31,13 +31,13 @@ import com.aoindustries.net.UrlUtils;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
-import com.aoindustries.web.dia.servlet.DiaExportServlet;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.OpenFile;
 import com.semanticcms.core.servlet.PageRefResolver;
 import com.semanticcms.core.servlet.impl.LinkImpl;
 import com.semanticcms.dia.model.DiaExport;
+import com.semanticcms.dia.servlet.DiaExportServlet;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,7 +60,7 @@ final public class DiaImpl {
 
 	private static final String TEMP_SUBDIR = DiaExport.class.getName();
 
-	private static final String MISSING_IMAGE_PATH = "/ao-web-dia-servlet/images/missing-image.jpg";
+	private static final String MISSING_IMAGE_PATH = "/semanticcms-dia-servlet/images/missing-image.jpg";
 	private static final int MISSING_IMAGE_WIDTH = 225;
 	private static final int MISSING_IMAGE_HEIGHT = 224;
 
@@ -77,7 +77,7 @@ final public class DiaImpl {
 	/**
 	 * The alt link ID prefix.
 	 */
-	private static final String ALT_LINK_ID_PREFIX = "ao-web-dia-servlet-alt-pixel-ratio-";
+	private static final String ALT_LINK_ID_PREFIX = "semanticcms-dia-servlet-alt-pixel-ratio-";
 
 	/**
 	 * The default width when neither width nor height provided.
