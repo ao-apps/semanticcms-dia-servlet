@@ -23,11 +23,11 @@
 package com.aoindustries.web.dia.servlet;
 
 import com.aoindustries.io.FileUtils;
-import com.aoindustries.web.dia.DiaExport;
 import com.aoindustries.web.dia.servlet.impl.DiaImpl;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.BooksContextListener;
+import com.semanticcms.dia.model.DiaExport;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

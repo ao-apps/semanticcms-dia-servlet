@@ -22,7 +22,7 @@
  */
 package com.aoindustries.web.dia.servlet;
 
-import com.aoindustries.web.dia.DiaExport;
+import com.semanticcms.dia.model.DiaExport;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
