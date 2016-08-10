@@ -25,6 +25,8 @@ package com.aoindustries.web.dia.servlet;
 import com.aoindustries.web.dia.servlet.impl.DiaImpl;
 import com.semanticcms.core.servlet.OpenFile;
 import com.semanticcms.dia.model.DiaExport;
+import java.io.File;
+import java.io.IOException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -41,9 +43,15 @@ public class DiaFileOpener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent sce) {
 		OpenFile.addFileOpener(
 			sce.getServletContext(),
-			resourceFile -> new String[] {
-				DiaImpl.getDiaOpenPath(),
-				resourceFile.getCanonicalPath()
+			// Java 1.8: Lambda here
+			new OpenFile.FileOpener() {
+				@Override
+				public String[] getCommand(File resourceFile) throws IOException {
+					return new String[] {
+						DiaImpl.getDiaOpenPath(),
+						resourceFile.getCanonicalPath()
+					};
+				}
 			},
 			DiaExport.EXTENSION
 		);

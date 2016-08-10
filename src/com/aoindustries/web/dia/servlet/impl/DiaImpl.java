@@ -188,7 +188,8 @@ final public class DiaImpl {
 				// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
 				boolean foundNormalOutput = false;
 				String stderr = result.getStderr();
-				try (BufferedReader errIn = new BufferedReader(new StringReader(stderr))) {
+				BufferedReader errIn = new BufferedReader(new StringReader(stderr));
+				try {
 					String line;
 					while((line = errIn.readLine())!=null) {
 						if(line.equals(normalOutput)) {
@@ -196,6 +197,8 @@ final public class DiaImpl {
 							break;
 						}
 					}
+				} finally {
+					errIn.close();
 				}
 				if(!foundNormalOutput) {
 					throw new IOException(diaExePath + ": " + stderr);

@@ -123,7 +123,10 @@ public class DiaExportServlet extends HttpServlet {
 				long lastModified = thumbnail.getTmpFile().lastModified();
 				return lastModified==0 ? -1 : lastModified;
 			}
-		} catch(IOException|ServletException e) {
+		} catch(IOException e) {
+			getServletContext().log(null, e);
+			return -1;
+		} catch(ServletException e) {
 			getServletContext().log(null, e);
 			return -1;
 		}
@@ -140,9 +143,8 @@ public class DiaExportServlet extends HttpServlet {
 			response.setContentType("image/png");
 			long length = thumbnail.getTmpFile().length();
 			if(length>0 && length<=Integer.MAX_VALUE) response.setContentLength((int)length);
-			try (OutputStream out = response.getOutputStream()) {
-				FileUtils.copy(thumbnail.getTmpFile(), out);
-			}
+			OutputStream out = response.getOutputStream();
+			FileUtils.copy(thumbnail.getTmpFile(), out);
 		}
 	}
 }
