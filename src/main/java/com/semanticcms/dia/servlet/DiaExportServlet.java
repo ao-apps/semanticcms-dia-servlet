@@ -25,7 +25,7 @@ package com.semanticcms.dia.servlet;
 import com.aoindustries.io.FileUtils;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
-import com.semanticcms.core.servlet.BooksContextListener;
+import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.impl.DiaExport;
 import com.semanticcms.dia.servlet.impl.DiaImpl;
@@ -93,7 +93,7 @@ public class DiaExportServlet extends HttpServlet {
 		PageRef pageRef;
 		{
 			String combinedPath = pathInfo.substring(0, sizeSepPos) + Dia.DOT_EXTENSION;
-			Book book = BooksContextListener.getBook(getServletContext(), combinedPath);
+			Book book = SemanticCMS.getInstance(getServletContext()).getBook(combinedPath);
 			if(book == null) return null;
 			pageRef = new PageRef(
 				book,
