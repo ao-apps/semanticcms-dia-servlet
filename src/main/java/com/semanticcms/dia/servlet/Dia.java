@@ -22,9 +22,12 @@
  */
 package com.semanticcms.dia.servlet;
 
+import com.aoindustries.io.TempFileList;
+import com.aoindustries.io.buffer.AutoTempFileWriter;
 import com.aoindustries.io.buffer.BufferResult;
 import com.aoindustries.io.buffer.BufferWriter;
 import com.aoindustries.io.buffer.SegmentedWriter;
+import com.aoindustries.servlet.filter.TempFileContext;
 import com.semanticcms.core.model.ElementContext;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.Element;
@@ -120,19 +123,35 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 	@Override
 	protected void doBody(CaptureLevel captureLevel, Body<? super com.semanticcms.dia.model.Dia> body) throws ServletException, IOException, SkipPageException {
 		super.doBody(captureLevel, body);
-		BufferWriter out = (captureLevel == CaptureLevel.BODY) ? new SegmentedWriter() : null;
+		BufferWriter capturedOut;
+		if(captureLevel == CaptureLevel.BODY) {
+			// Enable temp files if temp file context active
+			capturedOut = TempFileContext.wrapTempFileList(
+				new SegmentedWriter(),
+				request,
+				// Java 1.8: AutoTempFileWriter::new
+				new TempFileContext.Wrapper<BufferWriter>() {
+					@Override
+					public BufferWriter call(BufferWriter original, TempFileList tempFileList) {
+						return new AutoTempFileWriter(original, tempFileList);
+					}
+				}
+			);
+		} else {
+			capturedOut = null;
+		}
 		try {
 			DiaImpl.writeDiaImpl(
 				servletContext,
 				request,
 				response,
-				out,
+				capturedOut,
 				element
 			);
 		} finally {
-			if(out != null) out.close();
+			if(capturedOut != null) capturedOut.close();
 		}
-		writeMe = out==null ? null : out.getResult();
+		writeMe = capturedOut==null ? null : capturedOut.getResult();
 	}
 
 	@Override
