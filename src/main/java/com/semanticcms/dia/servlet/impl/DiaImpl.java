@@ -61,9 +61,9 @@ final public class DiaImpl {
 
 	private static final String TEMP_SUBDIR = DiaExport.class.getName();
 
-	private static final String MISSING_IMAGE_PATH = "/semanticcms-dia-servlet/images/missing-image.jpg";
-	private static final int MISSING_IMAGE_WIDTH = 225;
-	private static final int MISSING_IMAGE_HEIGHT = 224;
+	private static final String MISSING_IMAGE_PATH = "/semanticcms-dia-servlet/images/broken-chain-1164481-640x480.jpg";
+	private static final int MISSING_IMAGE_WIDTH = 640;
+	private static final int MISSING_IMAGE_HEIGHT = 480;
 
 	public static final char SIZE_SEPARATOR = '-';
 	public static final char EMPTY_SIZE = '_';
