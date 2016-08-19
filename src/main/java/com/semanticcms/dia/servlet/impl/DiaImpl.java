@@ -34,7 +34,6 @@ import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
-import com.semanticcms.core.servlet.OpenFile;
 import com.semanticcms.core.servlet.PageIndex;
 import com.semanticcms.core.servlet.PageRefResolver;
 import com.semanticcms.dia.model.Dia;
@@ -57,7 +56,8 @@ final public class DiaImpl {
 
 	private static final String WINDOWS_DIA_PATH = "C:\\Program Files (x86)\\Dia\\bin\\dia.exe";
 
-	private static final String WINDOWS_DIAW_PATH = "C:\\Program Files (x86)\\Dia\\bin\\diaw.exe";
+	// This was used for opening the diagram, moved to semanticcms-openfile-servlet to avoid dependency.
+	//private static final String WINDOWS_DIAW_PATH = "C:\\Program Files (x86)\\Dia\\bin\\diaw.exe";
 
 	private static final String TEMP_SUBDIR = DiaExport.class.getName();
 
@@ -95,21 +95,28 @@ final public class DiaImpl {
 		4
 	};
 
+	private static boolean isWindows() {
+		String osName = System.getProperty("os.name");
+		return osName!=null && osName.toLowerCase(Locale.ROOT).contains("windows");
+	}
+
 	private static String getDiaExportPath() {
-		if(OpenFile.isWindows()) {
+		if(isWindows()) {
 			return WINDOWS_DIA_PATH;
 		} else {
 			return LINUX_DIA_PATH;
 		}
 	}
 
+	/* This was used for opening the diagram, moved to semanticcms-openfile-servlet to avoid dependency.
 	public static String getDiaOpenPath() {
-		if(OpenFile.isWindows()) {
+		if(isWindows()) {
 			return WINDOWS_DIAW_PATH;
 		} else {
 			return LINUX_DIA_PATH;
 		}
 	}
+	 */
 
 	public static DiaExport exportDiagram(
 		PageRef pageRef,
@@ -181,7 +188,7 @@ final public class DiaImpl {
 			ProcessResult result = ProcessResult.exec(command);
 			int exitVal = result.getExitVal();
 			if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
-			if(!OpenFile.isWindows()) {
+			if(!isWindows()) {
 				// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
 				// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
 				String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
