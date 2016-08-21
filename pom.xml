@@ -39,15 +39,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 	<url>https://semanticcms.com/docs/semanticcms-dia-servlet/</url>
 	<description>Java API for embedding Dia-based diagrams in web pages in a Servlet environment.</description>
 
-	<developers>
-		<developer>
-			<name>AO Industries, Inc.</name>
-			<email>support@aoindustries.com</email>
-			<organization>AO Industries, Inc.</organization>
-			<organizationUrl>https://www.aoindustries.com/</organizationUrl>
-		</developer>
-	</developers>
-
 	<scm>
 		<connection>scm:git:git://github.com/aoindustries/semanticcms-dia-servlet.git</connection>
 		<developerConnection>scm:git:git@github.com:aoindustries/semanticcms-dia-servlet.git</developerConnection>
