@@ -27,7 +27,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 	<parent>
 		<groupId>com.semanticcms</groupId>
 		<artifactId>semanticcms-dia</artifactId>
-		<version>1.0</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.semanticcms</groupId>
