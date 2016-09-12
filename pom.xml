@@ -27,7 +27,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 	<parent>
 		<groupId>com.semanticcms</groupId>
 		<artifactId>semanticcms-dia</artifactId>
-		<version>1.2</version>
+		<version>1.3-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.semanticcms</groupId>
@@ -36,7 +36,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 	<packaging>jar</packaging>
 
 	<name>SemanticCMS Dia Servlet</name>
-	<url>https://semanticcms.com/docs/semanticcms-dia-servlet/</url>
+	<url>https://semanticcms.com/dia/servlet/</url>
 	<description>Java API for embedding Dia-based diagrams in web pages in a Servlet environment.</description>
 
 	<scm>
@@ -82,17 +82,17 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<dependency>
 			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-core-model</artifactId>
-			<version>1.6</version>
+			<version>1.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-core-servlet</artifactId>
-			<version>1.7</version>
+			<version>1.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-dia-model</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
