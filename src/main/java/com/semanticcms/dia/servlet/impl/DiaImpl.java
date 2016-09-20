@@ -34,7 +34,6 @@ import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
 import com.aoindustries.util.WrappedException;
 import com.aoindustries.util.concurrent.ConcurrencyLimiter;
-import com.aoindustries.util.concurrent.ExecutorService;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.PageIndex;
@@ -53,7 +52,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -320,48 +318,42 @@ final public class DiaImpl {
 					if(width==0 && height==0) width = DEFAULT_WIDTH;
 					File resourceFile = pageRef.getResourceFile(false, true);
 					// Scale concurrently for each pixel density
-					DiaExport[] exports;
+					List<DiaExport> exports;
 					if(resourceFile == null) {
 						exports = null;
 					} else {
 						final File tempDir = (File)servletContext.getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/);
 						final int finalWidth = width;
 						final int finalHeight = height;
-						ExecutorService executorService = SemanticCMS.getInstance(servletContext).getExecutorService();
-						List<Future<DiaExport>> futures = new ArrayList<Future<DiaExport>>(PIXEL_DENSITIES.length);
+						List<Callable<DiaExport>> tasks = new ArrayList<Callable<DiaExport>>(PIXEL_DENSITIES.length);
 						for(int i=0; i<PIXEL_DENSITIES.length; i++) {
 							final int pixelDensity = PIXEL_DENSITIES[i];
-							futures.add(
-								executorService.submitPerProcessor(
-									new Callable<DiaExport>() {
-										@Override
-										public DiaExport call() throws InterruptedException, IOException {
-											return exportDiagram(
-												pageRef,
-												finalWidth==0 ? null : (finalWidth * pixelDensity),
-												finalHeight==0 ? null : (finalHeight * pixelDensity),
-												tempDir
-											);
-										}
+							tasks.add(
+								new Callable<DiaExport>() {
+									@Override
+									public DiaExport call() throws InterruptedException, IOException {
+										return exportDiagram(
+											pageRef,
+											finalWidth==0 ? null : (finalWidth * pixelDensity),
+											finalHeight==0 ? null : (finalHeight * pixelDensity),
+											tempDir
+										);
 									}
-								)
+								}
 							);
 						}
-						exports = new DiaExport[PIXEL_DENSITIES.length];
 						try {
-							for(int i=0; i<PIXEL_DENSITIES.length; i++) {
-								exports[i] = futures.get(i).get();
-							}
+							exports = SemanticCMS.getInstance(servletContext).getExecutors().getPerProcessor().callAll(tasks);
 						} catch(ExecutionException e) {
 							Throwable cause = e.getCause();
+							if(cause instanceof RuntimeException) throw ((RuntimeException)cause);
 							if(cause instanceof InterruptedException) throw ((InterruptedException)cause);
 							if(cause instanceof IOException) throw ((IOException)cause);
-							if(cause instanceof RuntimeException) throw ((RuntimeException)cause);
 							throw new WrappedException(e);
 						}
 					}
 					// Get the thumbnail image in default pixel density
-					DiaExport export = exports == null ? null : exports[0];
+					DiaExport export = exports == null ? null : exports.get(0);
 					// Find id sequence
 					Sequence idSequence = (Sequence)request.getAttribute(ID_SEQUENCE_REQUEST_ATTRIBUTE_NAME);
 					if(idSequence == null) {
@@ -431,12 +423,13 @@ final public class DiaImpl {
 
 					if(export != null && PIXEL_DENSITIES.length > 1) {
 						assert resourceFile != null;
+						assert exports != null;
 						// Write links to the exports for higher pixel densities
 						long[] altLinkNums = new long[PIXEL_DENSITIES.length];
 						for(int i=0; i<PIXEL_DENSITIES.length; i++) {
 							int pixelDensity = PIXEL_DENSITIES[i];
 							// Get the thumbnail image in alternate pixel density
-							DiaExport altExport = exports[i];
+							DiaExport altExport = exports.get(i);
 							// Write the a tag to additional pixel densities
 							out.append("<a id=\"" + ALT_LINK_ID_PREFIX);
 							long altLinkNum = idSequence.getNextSequenceValue();
