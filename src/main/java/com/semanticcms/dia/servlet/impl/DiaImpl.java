@@ -36,9 +36,9 @@ import com.aoindustries.util.WrappedException;
 import com.aoindustries.util.concurrent.ConcurrencyLimiter;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
+import com.semanticcms.core.servlet.CountConcurrencyFilter;
 import com.semanticcms.core.servlet.PageIndex;
 import com.semanticcms.core.servlet.PageRefResolver;
-import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.DiaExportServlet;
 import java.awt.Dimension;
@@ -343,7 +343,7 @@ final public class DiaImpl {
 							);
 						}
 						try {
-							exports = SemanticCMS.getInstance(servletContext).getExecutors().getPerProcessor().callAll(tasks);
+							exports = CountConcurrencyFilter.getRecommendedExecutor(servletContext, request).callAll(tasks);
 						} catch(ExecutionException e) {
 							Throwable cause = e.getCause();
 							if(cause instanceof RuntimeException) throw ((RuntimeException)cause);
