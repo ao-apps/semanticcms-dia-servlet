@@ -66,7 +66,8 @@ final public class DiaImpl {
 	// This was used for opening the diagram, moved to semanticcms-openfile-servlet to avoid dependency.
 	//private static final String WINDOWS_DIAW_PATH = "C:\\Program Files (x86)\\Dia\\bin\\diaw.exe";
 
-	private static final Object tempDirLock = new Object();
+	private static class TempDirLock {}
+	private static final TempDirLock tempDirLock = new TempDirLock();
 	private static final String TEMP_SUBDIR = DiaExport.class.getName();
 
 	private static final String MISSING_IMAGE_PATH = "/semanticcms-dia-servlet/images/broken-chain-1164481-640x480.jpg";
