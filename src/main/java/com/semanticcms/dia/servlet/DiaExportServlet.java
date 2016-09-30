@@ -110,6 +110,8 @@ public class DiaExportServlet extends HttpServlet {
 				(File)getServletContext().getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/)
 			);
 		} catch(InterruptedException e) {
+			// Restore the interrupted status
+			Thread.currentThread().interrupt();
 			throw new ServletException(e);
 		} catch(FileNotFoundException e) {
 			return null;
