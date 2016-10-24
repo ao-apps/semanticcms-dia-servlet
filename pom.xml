@@ -72,7 +72,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<ul>
 			<li><a target="_top" href="https://semanticcms.com/dia/servlet/">Project Home</a></li>
 			<li><a target="_top" href="https://semanticcms.com/dia/servlet/apidocs/">API Docs</a></li>
-			<li><a target="_top" href="https://search.maven.org/#search|gav|1|g:%22com.semanticcms%22%20AND%20a:%22semanticcms-dia-servlet%22">Maven Central Repository</a></li>
+			<li><a target="_top" href="https://search.maven.org/#search%7Cgav%7C1%7Cg:%22com.semanticcms%22%20AND%20a:%22semanticcms-dia-servlet%22">Maven Central Repository</a></li>
 			<li><a target="_top" href="https://github.com/aoindustries/semanticcms-dia-servlet">GitHub</a></li>
 		</ul>
 	</div>
