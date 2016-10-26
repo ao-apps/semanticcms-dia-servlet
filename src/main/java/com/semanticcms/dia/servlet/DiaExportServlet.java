@@ -144,7 +144,7 @@ public class DiaExportServlet extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} else {
 			// Write output
-			response.reset();
+			response.resetBuffer();
 			response.setContentType("image/png");
 			long length = thumbnail.getTmpFile().length();
 			if(length>0 && length<=Integer.MAX_VALUE) response.setContentLength((int)length);
