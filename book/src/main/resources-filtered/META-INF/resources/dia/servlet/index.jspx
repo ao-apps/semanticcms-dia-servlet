@@ -38,7 +38,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<core:child page="changelog.jspx" />
 		<core:child page="apidocs/index.jspx" />
 		<p>
-			@{description.html}
+			Java API for embedding <ao:a href="https://wiki.gnome.org/Apps/Dia/">Dia-based diagrams</ao:a> in web pages in a Servlet environment.
 		</p>
 		<section:section label="Project Links">
 			<ul>
