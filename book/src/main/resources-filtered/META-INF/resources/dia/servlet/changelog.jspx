@@ -36,6 +36,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T22:14:53-0500"
+		dateModified="2016-11-12T11:08:43-0600:"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:if test="${fn:endsWith('@{com.aoindustries:semanticcms-dia-servlet:jar.version}', '-SNAPSHOT')}">
@@ -51,6 +52,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 					<li>Implemented getLastModified in servlets corresponding to resource last modified.</li>
 					<li>Project documentation moved to per-project book in <core:link book="/" page="/index.jspx" /> format.</li>
 					<li>Added changelog as top-level project link.</li>
+					<li>Content type of <code>application/x-dia-diagram</code> for <code>*.dia</code> files now set in <code>/META-INF/web-fragment.xml</code> instead of a servlet filter.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
