@@ -26,8 +26,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 
 	<parent>
 		<groupId>com.semanticcms</groupId>
-		<artifactId>semanticcms-dia</artifactId>
-		<version>1.3.2-SNAPSHOT</version>
+		<artifactId>semanticcms-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.semanticcms</groupId>
@@ -36,6 +37,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 	<packaging>jar</packaging>
 
 	<properties>
+		<javadoc.breadcrumbs><![CDATA[<a target="_top" href="https://semanticcms.com/">SemanticCMS</a>
+/ <a target="_top" href="https://semanticcms.com/dia/">Dia</a>
+/ <a target="_top" href="${project.url}">${shortTitle}</a>]]></javadoc.breadcrumbs>
 		<shortTitle>Servlet</shortTitle>
 		<description.html><![CDATA[Java API for embedding <a target="_top" href="https://wiki.gnome.org/Apps/Dia/">Dia-based diagrams</a> in web pages in a Servlet environment.]]></description.html>
 	</properties>
