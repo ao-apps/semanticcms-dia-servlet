@@ -1,6 +1,6 @@
 /*
  * semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -47,15 +47,43 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
+		com.semanticcms.dia.model.Dia element,
 		String path
 	) {
 		super(
 			servletContext,
 			request,
 			response,
-			new com.semanticcms.dia.model.Dia()
+			element
 		);
 		element.setPath(path);
+	}
+
+	public Dia(
+		ServletContext servletContext,
+		HttpServletRequest request,
+		HttpServletResponse response,
+		String path
+	) {
+		this(
+			servletContext,
+			request,
+			response,
+			new com.semanticcms.dia.model.Dia(),
+			path
+		);
+	}
+
+	public Dia(
+		ServletContext servletContext,
+		HttpServletRequest request,
+		HttpServletResponse response,
+		com.semanticcms.dia.model.Dia element,
+		String book,
+		String path
+	) {
+		this(servletContext, request, response, element, path);
+		element.setBook(book);
 	}
 
 	public Dia(
@@ -74,6 +102,24 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 	 *
 	 * @see  PageContext
 	 */
+	public Dia(
+		com.semanticcms.dia.model.Dia element,
+		String path
+	) {
+		this(
+			PageContext.getServletContext(),
+			PageContext.getRequest(),
+			PageContext.getResponse(),
+			element,
+			path
+		);
+	}
+
+	/**
+	 * Creates a new diagram in the current page context.
+	 *
+	 * @see  PageContext
+	 */
 	public Dia(String path) {
 		this(
 			PageContext.getServletContext(),
@@ -81,6 +127,20 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 			PageContext.getResponse(),
 			path
 		);
+	}
+
+	/**
+	 * Creates a new diagram in the current page context.
+	 *
+	 * @see  PageContext
+	 */
+	public Dia(
+		com.semanticcms.dia.model.Dia element,
+		String book,
+		String path
+	) {
+		this(element, path);
+		element.setBook(book);
 	}
 
 	/**
