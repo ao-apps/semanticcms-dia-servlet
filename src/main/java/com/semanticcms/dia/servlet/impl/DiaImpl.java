@@ -1,6 +1,6 @@
 /*
  * semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -34,11 +34,13 @@ import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
 import com.aoindustries.util.WrappedException;
 import com.aoindustries.util.concurrent.ConcurrencyLimiter;
+import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CountConcurrencyFilter;
 import com.semanticcms.core.servlet.PageIndex;
 import com.semanticcms.core.servlet.PageRefResolver;
+import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.DiaExportServlet;
 import java.awt.Dimension;
@@ -133,12 +135,18 @@ final public class DiaImpl {
 	private static final ConcurrencyLimiter<File,Void> exportConcurrencyLimiter = new ConcurrencyLimiter<File,Void>();
 
 	public static DiaExport exportDiagram(
+		ServletContext servletContext,
 		PageRef pageRef,
 		final Integer width,
 		final Integer height,
 		File tmpDir
 	) throws InterruptedException, FileNotFoundException, IOException {
-		final File diaFile = pageRef.getResourceFile(true, true);
+		BookRef bookRef = pageRef.getBookRef();
+		final File diaFile = SemanticCMS
+			.getInstance(servletContext)
+			.getBook(bookRef)
+			.getSourceFile(pageRef.getPath(), true, true)
+		;
 
 		String diaPath = pageRef.getPath();
 		// Strip extension if matches expected value
@@ -151,7 +159,7 @@ final public class DiaImpl {
 			tmpFile = new File(
 				tmpDir,
 				TEMP_SUBDIR
-					+ pageRef.getBookPrefix().replace('/', File.separatorChar)
+					+ bookRef.getPrefix().replace('/', File.separatorChar)
 					+ diaPath.replace('/', File.separatorChar)
 					+ "-"
 					+ (width==null ? "_" : width.toString())
@@ -272,7 +280,7 @@ final public class DiaImpl {
 		urlPath
 			.append(request.getContextPath())
 			.append(DiaExportServlet.SERVLET_PATH)
-			.append(pageRef.getBookPrefix())
+			.append(pageRef.getBookRef().getPrefix())
 			.append(diaPath)
 			.append(SIZE_SEPARATOR);
 		if(width == 0) {
@@ -300,7 +308,7 @@ final public class DiaImpl {
 	}
 
 	public static void writeDiaImpl(
-		ServletContext servletContext,
+		final ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
 		Appendable out,
@@ -310,14 +318,18 @@ final public class DiaImpl {
 			// Get the current capture state
 			final CaptureLevel captureLevel = CaptureLevel.getCaptureLevel(request);
 			if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
-				final PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, dia.getBook(), dia.getPath());
+				final PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, dia.getDomain(), dia.getBook(), dia.getPath());
 				if(captureLevel == CaptureLevel.BODY) {
 					final String responseEncoding = response.getCharacterEncoding();
 					// Use default width when neither provided
 					int width = dia.getWidth();
 					int height = dia.getHeight();
 					if(width==0 && height==0) width = DEFAULT_WIDTH;
-					File resourceFile = pageRef.getResourceFile(false, true);
+					File resourceFile = SemanticCMS
+						.getInstance(servletContext)
+						.getBook(pageRef.getBookRef())
+						.getSourceFile(pageRef.getPath(), false, true)
+					;
 					// Scale concurrently for each pixel density
 					List<DiaExport> exports;
 					if(resourceFile == null) {
@@ -334,6 +346,7 @@ final public class DiaImpl {
 									@Override
 									public DiaExport call() throws InterruptedException, IOException {
 										return exportDiagram(
+											servletContext,
 											pageRef,
 											finalWidth==0 ? null : (finalWidth * pixelDensity),
 											finalHeight==0 ? null : (finalHeight * pixelDensity),

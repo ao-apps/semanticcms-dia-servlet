@@ -97,6 +97,31 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		element.setBook(book);
 	}
 
+	public Dia(
+		ServletContext servletContext,
+		HttpServletRequest request,
+		HttpServletResponse response,
+		com.semanticcms.dia.model.Dia element,
+		String domain,
+		String book,
+		String path
+	) {
+		this(servletContext, request, response, element, book, path);
+		element.setDomain(domain);
+	}
+
+	public Dia(
+		ServletContext servletContext,
+		HttpServletRequest request,
+		HttpServletResponse response,
+		String domain,
+		String book,
+		String path
+	) {
+		this(servletContext, request, response, book, path);
+		element.setDomain(domain);
+	}
+
 	/**
 	 * Creates a new diagram in the current page context.
 	 *
@@ -153,6 +178,31 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		element.setBook(book);
 	}
 
+	/**
+	 * Creates a new diagram in the current page context.
+	 *
+	 * @see  PageContext
+	 */
+	public Dia(
+		com.semanticcms.dia.model.Dia element,
+		String domain,
+		String book,
+		String path
+	) {
+		this(element, book, path);
+		element.setDomain(domain);
+	}
+
+	/**
+	 * Creates a new diagram in the current page context.
+	 *
+	 * @see  PageContext
+	 */
+	public Dia(String domain, String book, String path) {
+		this(book, path);
+		element.setDomain(domain);
+	}
+
 	@Override
 	public Dia id(String id) {
 		super.id(id);
@@ -161,6 +211,11 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 
 	public Dia label(String label) {
 		element.setLabel(label);
+		return this;
+	}
+
+	public Dia domain(String domain) {
+		element.setDomain(domain);
 		return this;
 	}
 
