@@ -1,6 +1,6 @@
 /*
  * semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -23,8 +23,9 @@
 package com.semanticcms.dia.servlet;
 
 import com.aoindustries.io.FileUtils;
-import com.semanticcms.core.model.Book;
+import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.repository.Book;
 import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.impl.DiaExport;
@@ -93,17 +94,21 @@ public class DiaExportServlet extends HttpServlet {
 		PageRef pageRef;
 		{
 			String combinedPath = pathInfo.substring(0, sizeSepPos) + Dia.DOT_EXTENSION;
-			Book book = SemanticCMS.getInstance(getServletContext()).getBook(combinedPath);
+			Book book = SemanticCMS.getInstance(getServletContext()).getPublishedBook(combinedPath);
 			if(book == null) return null;
+			BookRef bookRef = book.getBookRef();
+			String prefix = bookRef.getPrefix();
+			assert combinedPath.startsWith(prefix);
 			pageRef = new PageRef(
-				book,
-				combinedPath.substring(book.getPathPrefix().length())
+				bookRef,
+				combinedPath.substring(prefix.length())
 			);
 		}
 
 		// Get the thumbnail image
 		try {
 			return DiaImpl.exportDiagram(
+				getServletContext(),
 				pageRef,
 				width,
 				height,
