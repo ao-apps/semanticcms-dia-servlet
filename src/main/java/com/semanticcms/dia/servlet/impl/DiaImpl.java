@@ -35,11 +35,14 @@ import com.aoindustries.util.UnsynchronizedSequence;
 import com.aoindustries.util.WrappedException;
 import com.aoindustries.util.concurrent.ConcurrencyLimiter;
 import com.semanticcms.core.model.BookRef;
-import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.model.Resource;
+import com.semanticcms.core.model.ResourceFile;
+import com.semanticcms.core.model.ResourceRef;
+import com.semanticcms.core.model.ResourceStore;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CountConcurrencyFilter;
 import com.semanticcms.core.servlet.PageIndex;
-import com.semanticcms.core.servlet.PageRefResolver;
+import com.semanticcms.core.servlet.ResourceRefResolver;
 import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.DiaExportServlet;
@@ -80,6 +83,12 @@ final public class DiaImpl {
 	public static final char EMPTY_SIZE = '_';
 	public static final char DIMENSION_SEPARATOR = 'x';
 	public static final String PNG_EXTENSION = ".png";
+
+	/**
+	 * Allows a range of last modified to vary, since platforms may not store millisecond
+	 * accurate timestamps.
+	 */
+	private static final int FILESYSTEM_TIMESTAMP_TOLERANCE = 1000;
 
 	/**
 	 * The request key used to ensure per-request unique element IDs.
@@ -136,19 +145,19 @@ final public class DiaImpl {
 
 	public static DiaExport exportDiagram(
 		ServletContext servletContext,
-		PageRef pageRef,
+		ResourceRef resourceRef,
 		final Integer width,
 		final Integer height,
 		File tmpDir
 	) throws InterruptedException, FileNotFoundException, IOException {
-		BookRef bookRef = pageRef.getBookRef();
-		final File diaFile = SemanticCMS
+		BookRef bookRef = resourceRef.getBookRef();
+		String diaPath = resourceRef.getPath();
+		final Resource resource = SemanticCMS
 			.getInstance(servletContext)
 			.getBook(bookRef)
-			.getSourceFile(pageRef.getPath(), true, true)
+			.getResourceStore()
+			.getResource(resourceRef)
 		;
-
-		String diaPath = pageRef.getPath();
 		// Strip extension if matches expected value
 		if(diaPath.toLowerCase(Locale.ROOT).endsWith(Dia.DOT_EXTENSION)) {
 			diaPath = diaPath.substring(0, diaPath.length() - Dia.DOT_EXTENSION.length());
@@ -178,7 +187,20 @@ final public class DiaImpl {
 				new Callable<Void>() {
 					@Override
 					public Void call() throws IOException {
-						if(!tmpFile.exists() || diaFile.lastModified() >= tmpFile.lastModified()) {
+						// TODO: Handle 0 for unknown last modified, similar to properties file auto-loaded by JSP
+						long resourceLastModified = resource.getLastModified();
+						boolean scaleNow;
+						if(!tmpFile.exists()) {
+							scaleNow = true;
+						} else {
+							// TODO: Handle 0 for unknown last modified, similar to properties file auto-loaded by JSP
+							long timeDiff = resourceLastModified - tmpFile.lastModified();
+							scaleNow =
+								timeDiff >= FILESYSTEM_TIMESTAMP_TOLERANCE
+								|| timeDiff <= -FILESYSTEM_TIMESTAMP_TOLERANCE // system time reset?
+							;
+						}
+						if(scaleNow) {
 							// Determine size for scaling
 							final String sizeParam;
 							if(width==null) {
@@ -194,55 +216,64 @@ final public class DiaImpl {
 									sizeParam = width + "x" + height;
 								}
 							}
-							// Build the command
-							final String diaExePath = getDiaExportPath();
-							final String[] command;
-							if(sizeParam == null) {
-								command = new String[] {
-									diaExePath,
-									"--export=" + tmpFile.getCanonicalPath(),
-									"--filter=png",
-									"--log-to-stderr",
-									diaFile.getCanonicalPath()
-								};
-							} else {
-								command = new String[] {
-									diaExePath,
-									"--export=" + tmpFile.getCanonicalPath(),
-									"--filter=png",
-									"--size=" + sizeParam,
-									"--log-to-stderr",
-									diaFile.getCanonicalPath()
-								};
-							}
-							// Export using dia
-							ProcessResult result = ProcessResult.exec(command);
-							int exitVal = result.getExitVal();
-							if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
-							if(!isWindows()) {
-								// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
-								// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
-								String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
-								// Read the standard error, if any one line matches the expected line, then it is OK
-								// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
-								boolean foundNormalOutput = false;
-								String stderr = result.getStderr();
-								BufferedReader errIn = new BufferedReader(new StringReader(stderr));
-								try {
-									String line;
-									while((line = errIn.readLine())!=null) {
-										if(line.equals(normalOutput)) {
-											foundNormalOutput = true;
-											break;
+							// Get the file
+							ResourceFile resourceFile = resource.getResourceFile();
+							try {
+								File diaFile = resourceFile.getFile();
+
+								// Build the command
+								final String diaExePath = getDiaExportPath();
+								final String[] command;
+								if(sizeParam == null) {
+									command = new String[] {
+										diaExePath,
+										"--export=" + tmpFile.getCanonicalPath(),
+										"--filter=png",
+										"--log-to-stderr",
+										diaFile.getCanonicalPath()
+									};
+								} else {
+									command = new String[] {
+										diaExePath,
+										"--export=" + tmpFile.getCanonicalPath(),
+										"--filter=png",
+										"--size=" + sizeParam,
+										"--log-to-stderr",
+										diaFile.getCanonicalPath()
+									};
+								}
+								// Export using dia
+								ProcessResult result = ProcessResult.exec(command);
+								int exitVal = result.getExitVal();
+								if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
+								if(!isWindows()) {
+									// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
+									// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
+									String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
+									// Read the standard error, if any one line matches the expected line, then it is OK
+									// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
+									boolean foundNormalOutput = false;
+									String stderr = result.getStderr();
+									BufferedReader errIn = new BufferedReader(new StringReader(stderr));
+									try {
+										String line;
+										while((line = errIn.readLine())!=null) {
+											if(line.equals(normalOutput)) {
+												foundNormalOutput = true;
+												break;
+											}
 										}
+									} finally {
+										errIn.close();
 									}
-								} finally {
-									errIn.close();
+									if(!foundNormalOutput) {
+										throw new IOException(diaExePath + ": " + stderr);
+									}
 								}
-								if(!foundNormalOutput) {
-									throw new IOException(diaExePath + ": " + stderr);
-								}
+							} finally {
+								resourceFile.close();
 							}
+							tmpFile.setLastModified(resourceLastModified);
 						}
 						return null;
 					}
@@ -256,7 +287,7 @@ final public class DiaImpl {
 		}
 		// Get actual dimensions
 		Dimension pngSize = ImageSizeCache.getImageSize(tmpFile);
-		
+
 		return new DiaExport(
 			tmpFile,
 			pngSize.width,
@@ -266,13 +297,13 @@ final public class DiaImpl {
 
 	private static String buildUrlPath(
 		HttpServletRequest request,
-		PageRef pageRef,
+		ResourceRef resourceRef,
 		int width,
 		int height,
 		int pixelDensity,
 		DiaExport export
 	) throws ServletException {
-		String diaPath = pageRef.getPath();
+		String diaPath = resourceRef.getPath();
 		// Strip extension
 		if(!diaPath.endsWith(Dia.DOT_EXTENSION)) throw new ServletException("Unexpected file extension for diagram: " + diaPath);
 		diaPath = diaPath.substring(0, diaPath.length() - Dia.DOT_EXTENSION.length());
@@ -280,7 +311,7 @@ final public class DiaImpl {
 		urlPath
 			.append(request.getContextPath())
 			.append(DiaExportServlet.SERVLET_PATH)
-			.append(pageRef.getBookRef().getPrefix())
+			.append(resourceRef.getBookRef().getPrefix())
 			.append(diaPath)
 			.append(SIZE_SEPARATOR);
 		if(width == 0) {
@@ -318,26 +349,37 @@ final public class DiaImpl {
 			// Get the current capture state
 			final CaptureLevel captureLevel = CaptureLevel.getCaptureLevel(request);
 			if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
-				final PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, dia.getDomain(), dia.getBook(), dia.getPath());
+				final ResourceRef resourceRef = ResourceRefResolver.getResourceRef(servletContext, request, dia.getDomain(), dia.getBook(), dia.getPath());
 				if(captureLevel == CaptureLevel.BODY) {
 					final String responseEncoding = response.getCharacterEncoding();
 					// Use default width when neither provided
 					int width = dia.getWidth();
 					int height = dia.getHeight();
 					if(width==0 && height==0) width = DEFAULT_WIDTH;
-					File resourceFile = SemanticCMS
-						.getInstance(servletContext)
-						.getBook(pageRef.getBookRef())
-						.getSourceFile(pageRef.getPath(), false, true)
-					;
+					Resource resource;
+					{
+						ResourceStore restoreStore = SemanticCMS
+							.getInstance(servletContext)
+							.getBook(resourceRef.getBookRef())
+							.getResourceStore()
+						;
+						if(restoreStore == null) {
+							resource = null;
+						} else {
+							resource = restoreStore.getResource(resourceRef);
+							if(!resource.exists()) resource = null;
+						}
+					}
 					// Scale concurrently for each pixel density
 					List<DiaExport> exports;
-					if(resourceFile == null) {
+					if(resource == null) {
 						exports = null;
 					} else {
 						final File tempDir = (File)servletContext.getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/);
 						final int finalWidth = width;
 						final int finalHeight = height;
+						// TODO: Avoid concurrent tasks when all diagrams are already up-to-date?
+						// TODO: Fetch resource file once when first needed?
 						List<Callable<DiaExport>> tasks = new ArrayList<Callable<DiaExport>>(PIXEL_DENSITIES.length);
 						for(int i=0; i<PIXEL_DENSITIES.length; i++) {
 							final int pixelDensity = PIXEL_DENSITIES[i];
@@ -347,7 +389,7 @@ final public class DiaImpl {
 									public DiaExport call() throws InterruptedException, IOException {
 										return exportDiagram(
 											servletContext,
-											pageRef,
+											resourceRef,
 											finalWidth==0 ? null : (finalWidth * pixelDensity),
 											finalHeight==0 ? null : (finalHeight * pixelDensity),
 											tempDir
@@ -383,7 +425,7 @@ final public class DiaImpl {
 					if(export != null) {
 						urlPath = buildUrlPath(
 							request,
-							pageRef,
+							resourceRef,
 							width,
 							height,
 							PIXEL_DENSITIES[0],
@@ -436,7 +478,7 @@ final public class DiaImpl {
 					out.append("\" />");
 
 					if(export != null && PIXEL_DENSITIES.length > 1) {
-						assert resourceFile != null;
+						assert resource != null && resource.exists();
 						assert exports != null;
 						// Write links to the exports for higher pixel densities
 						long[] altLinkNums = new long[PIXEL_DENSITIES.length];
@@ -452,7 +494,7 @@ final public class DiaImpl {
 							out.append("\" style=\"display:none\" href=\"");
 							final String altUrlPath = buildUrlPath(
 								request,
-								pageRef,
+								resourceRef,
 								width,
 								height,
 								pixelDensity,
