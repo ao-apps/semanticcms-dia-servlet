@@ -24,7 +24,7 @@ package com.semanticcms.dia.servlet;
 
 import com.aoindustries.io.FileUtils;
 import com.semanticcms.core.model.BookRef;
-import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.model.ResourceRef;
 import com.semanticcms.core.repository.Book;
 import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
@@ -91,7 +91,7 @@ public class DiaExportServlet extends HttpServlet {
 		// Must have at least width or height to continue
 		if(width==null && height==null) return null;
 		// Find book and path
-		PageRef pageRef;
+		ResourceRef resourceRef;
 		{
 			String combinedPath = pathInfo.substring(0, sizeSepPos) + Dia.DOT_EXTENSION;
 			Book book = SemanticCMS.getInstance(getServletContext()).getPublishedBook(combinedPath);
@@ -99,7 +99,7 @@ public class DiaExportServlet extends HttpServlet {
 			BookRef bookRef = book.getBookRef();
 			String prefix = bookRef.getPrefix();
 			assert combinedPath.startsWith(prefix);
-			pageRef = new PageRef(
+			resourceRef = new ResourceRef(
 				bookRef,
 				combinedPath.substring(prefix.length())
 			);
@@ -109,7 +109,7 @@ public class DiaExportServlet extends HttpServlet {
 		try {
 			return DiaImpl.exportDiagram(
 				getServletContext(),
-				pageRef,
+				resourceRef,
 				width,
 				height,
 				(File)getServletContext().getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/)
