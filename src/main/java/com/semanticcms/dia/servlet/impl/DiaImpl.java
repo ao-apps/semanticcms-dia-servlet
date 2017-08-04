@@ -36,6 +36,7 @@ import com.aoindustries.util.WrappedException;
 import com.aoindustries.util.concurrent.ConcurrencyLimiter;
 import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.Resource;
+import com.semanticcms.core.model.ResourceConnection;
 import com.semanticcms.core.model.ResourceFile;
 import com.semanticcms.core.model.ResourceRef;
 import com.semanticcms.core.model.ResourceStore;
@@ -150,14 +151,25 @@ final public class DiaImpl {
 		final Integer height,
 		File tmpDir
 	) throws InterruptedException, FileNotFoundException, IOException {
-		BookRef bookRef = resourceRef.getBookRef();
-		String diaPath = resourceRef.getPath();
 		final Resource resource = SemanticCMS
 			.getInstance(servletContext)
-			.getBook(bookRef)
+			.getBook(resourceRef.getBookRef())
 			.getResourceStore()
-			.getResource(resourceRef)
+			.getResource(resourceRef.getPath())
 		;
+		return exportDiagram(servletContext, resourceRef, resource, width, height, tmpDir);
+	}
+
+	public static DiaExport exportDiagram(
+		ServletContext servletContext,
+		ResourceRef resourceRef,
+		final Resource resource,
+		final Integer width,
+		final Integer height,
+		File tmpDir
+	) throws InterruptedException, FileNotFoundException, IOException {
+		BookRef bookRef = resourceRef.getBookRef();
+		String diaPath = resourceRef.getPath();
 		// Strip extension if matches expected value
 		if(diaPath.toLowerCase(Locale.ROOT).endsWith(Dia.DOT_EXTENSION)) {
 			diaPath = diaPath.substring(0, diaPath.length() - Dia.DOT_EXTENSION.length());
@@ -187,95 +199,100 @@ final public class DiaImpl {
 				new Callable<Void>() {
 					@Override
 					public Void call() throws IOException {
-						// TODO: Handle 0 for unknown last modified, similar to properties file auto-loaded by JSP
-						long resourceLastModified = resource.getLastModified();
-						boolean scaleNow;
-						if(!tmpFile.exists()) {
-							scaleNow = true;
-						} else {
+						ResourceConnection conn = resource.open();
+						try {
 							// TODO: Handle 0 for unknown last modified, similar to properties file auto-loaded by JSP
-							long timeDiff = resourceLastModified - tmpFile.lastModified();
-							scaleNow =
-								timeDiff >= FILESYSTEM_TIMESTAMP_TOLERANCE
-								|| timeDiff <= -FILESYSTEM_TIMESTAMP_TOLERANCE // system time reset?
-							;
-						}
-						if(scaleNow) {
-							// Determine size for scaling
-							final String sizeParam;
-							if(width==null) {
-								if(height==null) {
-									sizeParam = null;
-								} else {
-									sizeParam = "x" + height;
-								}
+							long resourceLastModified = conn.getLastModified();
+							boolean scaleNow;
+							if(!tmpFile.exists()) {
+								scaleNow = true;
 							} else {
-								if(height==null) {
-									sizeParam = width + "x";
-								} else {
-									sizeParam = width + "x" + height;
-								}
+								// TODO: Handle 0 for unknown last modified, similar to properties file auto-loaded by JSP
+								long timeDiff = resourceLastModified - tmpFile.lastModified();
+								scaleNow =
+									timeDiff >= FILESYSTEM_TIMESTAMP_TOLERANCE
+									|| timeDiff <= -FILESYSTEM_TIMESTAMP_TOLERANCE // system time reset?
+								;
 							}
-							// Get the file
-							ResourceFile resourceFile = resource.getResourceFile();
-							try {
-								File diaFile = resourceFile.getFile();
+							if(scaleNow) {
+								// Determine size for scaling
+								final String sizeParam;
+								if(width==null) {
+									if(height==null) {
+										sizeParam = null;
+									} else {
+										sizeParam = "x" + height;
+									}
+								} else {
+									if(height==null) {
+										sizeParam = width + "x";
+									} else {
+										sizeParam = width + "x" + height;
+									}
+								}
+								// Get the file
+								ResourceFile resourceFile = conn.getResourceFile();
+								try {
+									File diaFile = resourceFile.getFile();
 
-								// Build the command
-								final String diaExePath = getDiaExportPath();
-								final String[] command;
-								if(sizeParam == null) {
-									command = new String[] {
-										diaExePath,
-										"--export=" + tmpFile.getCanonicalPath(),
-										"--filter=png",
-										"--log-to-stderr",
-										diaFile.getCanonicalPath()
-									};
-								} else {
-									command = new String[] {
-										diaExePath,
-										"--export=" + tmpFile.getCanonicalPath(),
-										"--filter=png",
-										"--size=" + sizeParam,
-										"--log-to-stderr",
-										diaFile.getCanonicalPath()
-									};
-								}
-								// Export using dia
-								ProcessResult result = ProcessResult.exec(command);
-								int exitVal = result.getExitVal();
-								if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
-								if(!isWindows()) {
-									// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
-									// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
-									String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
-									// Read the standard error, if any one line matches the expected line, then it is OK
-									// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
-									boolean foundNormalOutput = false;
-									String stderr = result.getStderr();
-									BufferedReader errIn = new BufferedReader(new StringReader(stderr));
-									try {
-										String line;
-										while((line = errIn.readLine())!=null) {
-											if(line.equals(normalOutput)) {
-												foundNormalOutput = true;
-												break;
+									// Build the command
+									final String diaExePath = getDiaExportPath();
+									final String[] command;
+									if(sizeParam == null) {
+										command = new String[] {
+											diaExePath,
+											"--export=" + tmpFile.getCanonicalPath(),
+											"--filter=png",
+											"--log-to-stderr",
+											diaFile.getCanonicalPath()
+										};
+									} else {
+										command = new String[] {
+											diaExePath,
+											"--export=" + tmpFile.getCanonicalPath(),
+											"--filter=png",
+											"--size=" + sizeParam,
+											"--log-to-stderr",
+											diaFile.getCanonicalPath()
+										};
+									}
+									// Export using dia
+									ProcessResult result = ProcessResult.exec(command);
+									int exitVal = result.getExitVal();
+									if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
+									if(!isWindows()) {
+										// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
+										// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
+										String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
+										// Read the standard error, if any one line matches the expected line, then it is OK
+										// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
+										boolean foundNormalOutput = false;
+										String stderr = result.getStderr();
+										BufferedReader errIn = new BufferedReader(new StringReader(stderr));
+										try {
+											String line;
+											while((line = errIn.readLine())!=null) {
+												if(line.equals(normalOutput)) {
+													foundNormalOutput = true;
+													break;
+												}
 											}
+										} finally {
+											errIn.close();
 										}
-									} finally {
-										errIn.close();
+										if(!foundNormalOutput) {
+											throw new IOException(diaExePath + ": " + stderr);
+										}
 									}
-									if(!foundNormalOutput) {
-										throw new IOException(diaExePath + ": " + stderr);
-									}
+								} finally {
+									resourceFile.close();
 								}
-							} finally {
-								resourceFile.close();
+								tmpFile.setLastModified(resourceLastModified);
 							}
-							tmpFile.setLastModified(resourceLastModified);
+							return null;
+						} finally {
+							conn.close();
 						}
-						return null;
 					}
 				}
 			);
@@ -328,12 +345,15 @@ final public class DiaImpl {
 		urlPath.append(PNG_EXTENSION);
 		// Check for header disabling auto last modified
 		if(!"false".equalsIgnoreCase(request.getHeader(LastModifiedServlet.LAST_MODIFIED_HEADER_NAME))) {
-			urlPath
-				.append('?')
-				.append(LastModifiedServlet.LAST_MODIFIED_PARAMETER_NAME)
-				.append('=')
-				.append(LastModifiedServlet.encodeLastModified(export.getTmpFile().lastModified()))
-			;
+			long lastModified = export.getTmpFile().lastModified();
+			if(lastModified != 0) {
+				urlPath
+					.append('?')
+					.append(LastModifiedServlet.LAST_MODIFIED_PARAMETER_NAME)
+					.append('=')
+					.append(LastModifiedServlet.encodeLastModified(lastModified))
+				;
+			}
 		}
 		return urlPath.toString();
 	}
@@ -356,7 +376,7 @@ final public class DiaImpl {
 					int width = dia.getWidth();
 					int height = dia.getHeight();
 					if(width==0 && height==0) width = DEFAULT_WIDTH;
-					Resource resource;
+					final Resource resource;
 					{
 						ResourceStore restoreStore = SemanticCMS
 							.getInstance(servletContext)
@@ -366,8 +386,9 @@ final public class DiaImpl {
 						if(restoreStore == null) {
 							resource = null;
 						} else {
-							resource = restoreStore.getResource(resourceRef);
-							if(!resource.exists()) resource = null;
+							Resource r = restoreStore.getResource(resourceRef.getPath());
+							if(!r.exists()) r = null;
+							resource = r;
 						}
 					}
 					// Scale concurrently for each pixel density
@@ -390,6 +411,7 @@ final public class DiaImpl {
 										return exportDiagram(
 											servletContext,
 											resourceRef,
+											resource,
 											finalWidth==0 ? null : (finalWidth * pixelDensity),
 											finalHeight==0 ? null : (finalHeight * pixelDensity),
 											tempDir
