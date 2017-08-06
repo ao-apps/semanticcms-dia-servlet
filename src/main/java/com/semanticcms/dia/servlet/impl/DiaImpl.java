@@ -38,7 +38,6 @@ import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.ResourceRef;
 import com.semanticcms.core.resources.Resource;
 import com.semanticcms.core.resources.ResourceConnection;
-import com.semanticcms.core.resources.ResourceFile;
 import com.semanticcms.core.resources.ResourceStore;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CountConcurrencyFilter;
@@ -231,61 +230,56 @@ final public class DiaImpl {
 									}
 								}
 								// Get the file
-								ResourceFile resourceFile = conn.getResourceFile();
-								try {
-									File diaFile = resourceFile.getFile();
+								File diaFile = conn.getFile();
 
-									// Build the command
-									final String diaExePath = getDiaExportPath();
-									final String[] command;
-									if(sizeParam == null) {
-										command = new String[] {
-											diaExePath,
-											"--export=" + tmpFile.getCanonicalPath(),
-											"--filter=png",
-											"--log-to-stderr",
-											diaFile.getCanonicalPath()
-										};
-									} else {
-										command = new String[] {
-											diaExePath,
-											"--export=" + tmpFile.getCanonicalPath(),
-											"--filter=png",
-											"--size=" + sizeParam,
-											"--log-to-stderr",
-											diaFile.getCanonicalPath()
-										};
-									}
-									// Export using dia
-									ProcessResult result = ProcessResult.exec(command);
-									int exitVal = result.getExitVal();
-									if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
-									if(!isWindows()) {
-										// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
-										// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
-										String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
-										// Read the standard error, if any one line matches the expected line, then it is OK
-										// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
-										boolean foundNormalOutput = false;
-										String stderr = result.getStderr();
-										BufferedReader errIn = new BufferedReader(new StringReader(stderr));
-										try {
-											String line;
-											while((line = errIn.readLine())!=null) {
-												if(line.equals(normalOutput)) {
-													foundNormalOutput = true;
-													break;
-												}
+								// Build the command
+								final String diaExePath = getDiaExportPath();
+								final String[] command;
+								if(sizeParam == null) {
+									command = new String[] {
+										diaExePath,
+										"--export=" + tmpFile.getCanonicalPath(),
+										"--filter=png",
+										"--log-to-stderr",
+										diaFile.getCanonicalPath()
+									};
+								} else {
+									command = new String[] {
+										diaExePath,
+										"--export=" + tmpFile.getCanonicalPath(),
+										"--filter=png",
+										"--size=" + sizeParam,
+										"--log-to-stderr",
+										diaFile.getCanonicalPath()
+									};
+								}
+								// Export using dia
+								ProcessResult result = ProcessResult.exec(command);
+								int exitVal = result.getExitVal();
+								if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
+								if(!isWindows()) {
+									// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
+									// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
+									String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
+									// Read the standard error, if any one line matches the expected line, then it is OK
+									// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
+									boolean foundNormalOutput = false;
+									String stderr = result.getStderr();
+									BufferedReader errIn = new BufferedReader(new StringReader(stderr));
+									try {
+										String line;
+										while((line = errIn.readLine())!=null) {
+											if(line.equals(normalOutput)) {
+												foundNormalOutput = true;
+												break;
 											}
-										} finally {
-											errIn.close();
 										}
-										if(!foundNormalOutput) {
-											throw new IOException(diaExePath + ": " + stderr);
-										}
+									} finally {
+										errIn.close();
 									}
-								} finally {
-									resourceFile.close();
+									if(!foundNormalOutput) {
+										throw new IOException(diaExePath + ": " + stderr);
+									}
 								}
 								tmpFile.setLastModified(resourceLastModified);
 							}
