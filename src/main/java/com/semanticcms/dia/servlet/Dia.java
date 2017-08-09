@@ -22,11 +22,8 @@
  */
 package com.semanticcms.dia.servlet;
 
-import com.aoindustries.io.TempFileList;
-import com.aoindustries.io.buffer.AutoTempFileWriter;
 import com.aoindustries.io.buffer.BufferResult;
 import com.aoindustries.io.buffer.BufferWriter;
-import com.aoindustries.servlet.filter.TempFileContext;
 import com.aoindustries.taglib.AutoEncodingBufferedTag;
 import com.semanticcms.core.model.ElementContext;
 import com.semanticcms.core.servlet.CaptureLevel;
@@ -240,18 +237,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		super.doBody(captureLevel, body);
 		BufferWriter capturedOut;
 		if(captureLevel == CaptureLevel.BODY) {
-			// Enable temp files if temp file context active
-			capturedOut = TempFileContext.wrapTempFileList(
-				AutoEncodingBufferedTag.newBufferWriter(),
-				request,
-				// Java 1.8: AutoTempFileWriter::new
-				new TempFileContext.Wrapper<BufferWriter>() {
-					@Override
-					public BufferWriter call(BufferWriter original, TempFileList tempFileList) {
-						return new AutoTempFileWriter(original, tempFileList);
-					}
-				}
-			);
+			capturedOut = AutoEncodingBufferedTag.newBufferWriter(request);
 		} else {
 			capturedOut = null;
 		}
