@@ -25,7 +25,7 @@ package com.semanticcms.dia.servlet;
 import com.aoindustries.io.FileUtils;
 import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.ResourceRef;
-import com.semanticcms.core.repository.Book;
+import com.semanticcms.core.pages.Book;
 import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.impl.DiaExport;

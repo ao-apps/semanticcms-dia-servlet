@@ -55,7 +55,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			>
 				<ul>
 					<li>Added <core:link book="/core/model" page="/index.jspx" /> domain support.</li>
-					<li>Added <core:link book="/core/repository" page="/index.jspx" /> repository support.</li>
+					<li>Added <core:link book="/core/pages" page="/index.jspx" /> support.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
