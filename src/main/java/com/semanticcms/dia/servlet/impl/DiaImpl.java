@@ -36,11 +36,12 @@ import com.aoindustries.util.WrappedException;
 import com.aoindustries.util.concurrent.ConcurrencyLimiter;
 import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.ResourceRef;
+import com.semanticcms.core.pages.CaptureLevel;
 import com.semanticcms.core.resources.Resource;
 import com.semanticcms.core.resources.ResourceConnection;
 import com.semanticcms.core.resources.ResourceStore;
-import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CountConcurrencyFilter;
+import com.semanticcms.core.servlet.CurrentCaptureLevel;
 import com.semanticcms.core.servlet.PageIndex;
 import com.semanticcms.core.servlet.ResourceRefResolver;
 import com.semanticcms.core.servlet.SemanticCMS;
@@ -153,7 +154,7 @@ final public class DiaImpl {
 		final Resource resource = SemanticCMS
 			.getInstance(servletContext)
 			.getBook(resourceRef.getBookRef())
-			.getResourceStore()
+			.getResources()
 			.getResource(resourceRef.getPath())
 		;
 		return exportDiagram(servletContext, resourceRef, resource, width, height, tmpDir);
@@ -168,7 +169,7 @@ final public class DiaImpl {
 		File tmpDir
 	) throws InterruptedException, FileNotFoundException, IOException {
 		BookRef bookRef = resourceRef.getBookRef();
-		String diaPath = resourceRef.getPath();
+		String diaPath = resourceRef.getPath().toString();
 		// Strip extension if matches expected value
 		if(diaPath.toLowerCase(Locale.ROOT).endsWith(Dia.DOT_EXTENSION)) {
 			diaPath = diaPath.substring(0, diaPath.length() - Dia.DOT_EXTENSION.length());
@@ -314,7 +315,7 @@ final public class DiaImpl {
 		int pixelDensity,
 		DiaExport export
 	) throws ServletException {
-		String diaPath = resourceRef.getPath();
+		String diaPath = resourceRef.getPath().toString();
 		// Strip extension
 		if(!diaPath.endsWith(Dia.DOT_EXTENSION)) throw new ServletException("Unexpected file extension for diagram: " + diaPath);
 		diaPath = diaPath.substring(0, diaPath.length() - Dia.DOT_EXTENSION.length());
@@ -361,7 +362,7 @@ final public class DiaImpl {
 	) throws ServletException, IOException {
 		try {
 			// Get the current capture state
-			final CaptureLevel captureLevel = CaptureLevel.getCaptureLevel(request);
+			final CaptureLevel captureLevel = CurrentCaptureLevel.getCaptureLevel(request);
 			if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
 				final ResourceRef resourceRef = ResourceRefResolver.getResourceRef(servletContext, request, dia.getDomain(), dia.getBook(), dia.getPath());
 				if(captureLevel == CaptureLevel.BODY) {
@@ -375,7 +376,7 @@ final public class DiaImpl {
 						ResourceStore restoreStore = SemanticCMS
 							.getInstance(servletContext)
 							.getBook(resourceRef.getBookRef())
-							.getResourceStore()
+							.getResources()
 						;
 						if(restoreStore == null) {
 							resource = null;

@@ -23,9 +23,11 @@
 package com.semanticcms.dia.servlet;
 
 import com.aoindustries.io.FileUtils;
+import com.aoindustries.net.Path;
+import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.ResourceRef;
-import com.semanticcms.core.pages.Book;
+import com.semanticcms.core.servlet.Book;
 import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.impl.DiaExport;
@@ -99,10 +101,14 @@ public class DiaExportServlet extends HttpServlet {
 			BookRef bookRef = book.getBookRef();
 			String prefix = bookRef.getPrefix();
 			assert combinedPath.startsWith(prefix);
-			resourceRef = new ResourceRef(
-				bookRef,
-				combinedPath.substring(prefix.length())
-			);
+			try {
+				resourceRef = new ResourceRef(
+					bookRef,
+					Path.valueOf(combinedPath.substring(prefix.length()))
+				);
+			} catch(ValidationException e) {
+				return null;
+			}
 		}
 
 		// Get the thumbnail image
