@@ -24,6 +24,7 @@ package com.semanticcms.dia.servlet;
 
 import com.aoindustries.io.buffer.BufferResult;
 import com.aoindustries.io.buffer.BufferWriter;
+import com.aoindustries.net.DomainName;
 import com.aoindustries.net.Path;
 import com.aoindustries.taglib.AutoEncodingBufferedTag;
 import com.semanticcms.core.model.ElementContext;
@@ -100,7 +101,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		HttpServletRequest request,
 		HttpServletResponse response,
 		com.semanticcms.dia.model.Dia element,
-		String domain,
+		DomainName domain,
 		Path book,
 		String path
 	) {
@@ -112,7 +113,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		String domain,
+		DomainName domain,
 		Path book,
 		String path
 	) {
@@ -183,7 +184,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 	 */
 	public Dia(
 		com.semanticcms.dia.model.Dia element,
-		String domain,
+		DomainName domain,
 		Path book,
 		String path
 	) {
@@ -196,7 +197,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 	 *
 	 * @see  PageContext
 	 */
-	public Dia(String domain, Path book, String path) {
+	public Dia(DomainName domain, Path book, String path) {
 		this(book, path);
 		element.setDomain(domain);
 	}
@@ -212,7 +213,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		return this;
 	}
 
-	public Dia domain(String domain) {
+	public Dia domain(DomainName domain) {
 		element.setDomain(domain);
 		return this;
 	}
