@@ -378,7 +378,7 @@ final public class DiaImpl {
 							.getBook(resourceRef.getBookRef())
 							.getResources()
 						;
-						if(restoreStore == null) {
+						if(restoreStore == null || !restoreStore.isAvailable()) {
 							resource = null;
 						} else {
 							Resource r = restoreStore.getResource(resourceRef.getPath());
