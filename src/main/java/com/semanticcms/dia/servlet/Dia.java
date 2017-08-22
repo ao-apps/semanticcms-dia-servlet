@@ -24,6 +24,7 @@ package com.semanticcms.dia.servlet;
 
 import com.aoindustries.io.buffer.BufferResult;
 import com.aoindustries.io.buffer.BufferWriter;
+import com.aoindustries.net.Path;
 import com.aoindustries.taglib.AutoEncodingBufferedTag;
 import com.semanticcms.core.model.ElementContext;
 import com.semanticcms.core.pages.CaptureLevel;
@@ -76,7 +77,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		HttpServletRequest request,
 		HttpServletResponse response,
 		com.semanticcms.dia.model.Dia element,
-		String book,
+		Path book,
 		String path
 	) {
 		this(servletContext, request, response, element, path);
@@ -87,7 +88,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		String book,
+		Path book,
 		String path
 	) {
 		this(servletContext, request, response, path);
@@ -100,7 +101,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		HttpServletResponse response,
 		com.semanticcms.dia.model.Dia element,
 		String domain,
-		String book,
+		Path book,
 		String path
 	) {
 		this(servletContext, request, response, element, book, path);
@@ -112,7 +113,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		HttpServletRequest request,
 		HttpServletResponse response,
 		String domain,
-		String book,
+		Path book,
 		String path
 	) {
 		this(servletContext, request, response, book, path);
@@ -158,7 +159,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 	 */
 	public Dia(
 		com.semanticcms.dia.model.Dia element,
-		String book,
+		Path book,
 		String path
 	) {
 		this(element, path);
@@ -170,7 +171,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 	 *
 	 * @see  PageContext
 	 */
-	public Dia(String book, String path) {
+	public Dia(Path book, String path) {
 		this(path);
 		element.setBook(book);
 	}
@@ -183,7 +184,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 	public Dia(
 		com.semanticcms.dia.model.Dia element,
 		String domain,
-		String book,
+		Path book,
 		String path
 	) {
 		this(element, book, path);
@@ -195,7 +196,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 	 *
 	 * @see  PageContext
 	 */
-	public Dia(String domain, String book, String path) {
+	public Dia(String domain, Path book, String path) {
 		this(book, path);
 		element.setDomain(domain);
 	}
@@ -216,7 +217,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		return this;
 	}
 
-	public Dia book(String book) {
+	public Dia book(Path book) {
 		element.setBook(book);
 		return this;
 	}
