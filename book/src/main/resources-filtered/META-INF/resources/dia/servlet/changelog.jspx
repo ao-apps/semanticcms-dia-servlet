@@ -54,8 +54,8 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 				scmUrl="@{documented.scm.url}"
 			>
 				<ul>
-					<li>Added <core:link book="/core/model" page="/index.jspx" /> domain support.</li>
-					<li>Added <core:link book="/core/pages" page="/index.jspx" /> support.</li>
+					<li>Added <core:link book="/core/model" page="/" /> domain support.</li>
+					<li>Added <core:link book="/core/pages" page="/" /> support.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
@@ -86,7 +86,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			<ul>
 				<li>New <ao:a href="https://aoindustries.com/ao-oss-parent/">AO OSS Parent</ao:a> POM to simplify <code>pom.xml</code> files.</li>
 				<li>Implemented getLastModified in servlets corresponding to resource last modified.</li>
-				<li>Project documentation moved to per-project book in <core:link book="/" page="/index.jspx" /> format.</li>
+				<li>Project documentation moved to per-project book in <core:link book="/" page="/" /> format.</li>
 				<li>Added changelog as top-level project link.</li>
 				<li>Content type of <code>application/x-dia-diagram</code> for <code>*.dia</code> files now set in <code>/META-INF/web-fragment.xml</code> instead of a servlet filter.</li>
 			</ul>
@@ -162,7 +162,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			scmUrl="@{documented.scm.url}"
 		>
 			<ul>
-				<li>New parent POM for all <core:link book="/" page="/index.jspx" /> components.</li>
+				<li>New parent POM for all <core:link book="/" page="/" /> components.</li>
 			</ul>
 		</changelog:release>
 
