@@ -70,19 +70,15 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 								<links>
 									<link>${javac.link.javaApi}</link>
 									<link>${javac.link.javaeeApi.6}</link>
-									<link>https://aoindustries.com/ao-concurrent/apidocs/</link>
-									<link>https://aoindustries.com/ao-encoding/apidocs/</link>
 									<link>https://aoindustries.com/ao-io-buffer/apidocs/</link>
-									<link>https://aoindustries.com/ao-lang/apidocs/</link>
 									<link>https://aoindustries.com/ao-net-types/apidocs/</link>
 									<link>https://aoindustries.com/ao-taglib/apidocs/</link>
-									<link>https://aoindustries.com/aocode-public/apidocs/</link>
 									<link>https://semanticcms.com/core/model/apidocs/</link>
 									<link>https://semanticcms.com/core/pages/apidocs/</link>
 									<link>https://semanticcms.com/core/pages/local/apidocs/</link>
-									<link>https://semanticcms.com/core/resources/apidocs/</link>
 									<link>https://semanticcms.com/core/servlet/apidocs/</link>
 									<link>https://semanticcms.com/dia/model/apidocs/</link>
+									<link>https://semanticcms.com/dia/renderer/html/apidocs/</link>
 								</links>
 							</configuration>
 						</plugin>
@@ -107,23 +103,8 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId>
-			<artifactId>ao-concurrent</artifactId>
-			<version>1.0.4-validation-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.aoindustries</groupId>
-			<artifactId>ao-encoding</artifactId>
-			<version>1.6.1-validation-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.aoindustries</groupId>
 			<artifactId>ao-io-buffer</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.aoindustries</groupId>
-			<artifactId>ao-lang</artifactId>
-			<version>1.1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId>
@@ -134,11 +115,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			<groupId>com.aoindustries</groupId>
 			<artifactId>ao-taglib</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.aoindustries</groupId>
-			<artifactId>aocode-public</artifactId>
-			<version>1.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.semanticcms</groupId>
@@ -157,17 +133,17 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		</dependency>
 		<dependency>
 			<groupId>com.semanticcms</groupId>
-			<artifactId>semanticcms-core-resources</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-core-servlet</artifactId>
 			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-dia-model</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.semanticcms</groupId>
+			<artifactId>semanticcms-dia-renderer-html</artifactId>
 			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
