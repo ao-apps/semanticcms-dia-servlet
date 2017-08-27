@@ -31,7 +31,7 @@ import com.semanticcms.core.model.ElementContext;
 import com.semanticcms.core.pages.CaptureLevel;
 import com.semanticcms.core.pages.local.PageContext;
 import com.semanticcms.core.servlet.Element;
-import com.semanticcms.dia.servlet.impl.DiaImpl;
+import com.semanticcms.dia.renderer.html.DiaHtmlRenderer;
 import java.io.IOException;
 import java.io.Writer;
 import javax.servlet.ServletContext;
@@ -244,7 +244,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 			capturedOut = null;
 		}
 		try {
-			DiaImpl.writeDiaImpl(
+			DiaHtmlRenderer.writeDiaImpl(
 				servletContext,
 				request,
 				response,
