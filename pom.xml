@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
-Copyright (C) 2016, 2017, 2018  AO Industries, Inc.
+Copyright (C) 2016, 2017, 2018, 2019  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -40,7 +40,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<description.html><![CDATA[Java API for embedding <a target="_top" href="https://wiki.gnome.org/Apps/Dia/">Dia-based diagrams</a> in web pages in a Servlet environment.]]></description.html>
 	</properties>
 
-	<name>SemanticCMS Dia Servlet</name>
+	<name>SemanticCMS 2 Dia Servlet</name>
 	<url>https://semanticcms.com/dia/servlet/</url>
 	<description>Java API for embedding Dia-based diagrams in web pages in a Servlet environment.</description>
 	<inceptionYear>2013</inceptionYear>
