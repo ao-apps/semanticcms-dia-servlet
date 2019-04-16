@@ -64,15 +64,15 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 							<links>
 								<link>${javac.link.javaApi}</link>
 								<link>${javac.link.javaeeApi.6}</link>
-								<link>https://aoindustries.com/ao-io-buffer/apidocs</link>
-								<link>https://aoindustries.com/ao-net-types/apidocs</link>
-								<link>https://aoindustries.com/ao-taglib/apidocs</link>
-								<link>https://semanticcms.com/core/model/apidocs</link>
-								<link>https://semanticcms.com/core/pages/apidocs</link>
-								<link>https://semanticcms.com/core/pages/local/apidocs</link>
-								<link>https://semanticcms.com/core/servlet/apidocs</link>
-								<link>https://semanticcms.com/dia/model/apidocs</link>
-								<link>https://semanticcms.com/dia/renderer/html/apidocs</link>
+								<link>https://aoindustries.com/ao-io-buffer/apidocs/</link>
+								<link>https://aoindustries.com/ao-net-types/apidocs/</link>
+								<link>https://aoindustries.com/ao-taglib/apidocs/</link>
+								<link>https://semanticcms.com/core/model/apidocs/</link>
+								<link>https://semanticcms.com/core/pages/apidocs/</link>
+								<link>https://semanticcms.com/core/pages/local/apidocs/</link>
+								<link>https://semanticcms.com/core/servlet/apidocs/</link>
+								<link>https://semanticcms.com/dia/model/apidocs/</link>
+								<link>https://semanticcms.com/dia/renderer/html/apidocs/</link>
 							</links>
 						</configuration>
 					</plugin>
