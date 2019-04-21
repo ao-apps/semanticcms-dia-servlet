@@ -1,6 +1,6 @@
 /*
  * semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -130,7 +130,7 @@ final public class DiaImpl {
 	/**
 	 * Make sure each diagram and scaling is only exported once when under concurrent access.
 	 */
-	private static final ConcurrencyLimiter<File,Void> exportConcurrencyLimiter = new ConcurrencyLimiter<File,Void>();
+	private static final ConcurrencyLimiter<File,Void> exportConcurrencyLimiter = new ConcurrencyLimiter<>();
 
 	public static DiaExport exportDiagram(
 		PageRef pageRef,
@@ -219,8 +219,7 @@ final public class DiaImpl {
 								// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
 								boolean foundNormalOutput = false;
 								String stderr = result.getStderr();
-								BufferedReader errIn = new BufferedReader(new StringReader(stderr));
-								try {
+								try (BufferedReader errIn = new BufferedReader(new StringReader(stderr))) {
 									String line;
 									while((line = errIn.readLine())!=null) {
 										if(line.equals(normalOutput)) {
@@ -228,8 +227,6 @@ final public class DiaImpl {
 											break;
 										}
 									}
-								} finally {
-									errIn.close();
 								}
 								if(!foundNormalOutput) {
 									throw new IOException(diaExePath + ": " + stderr);
@@ -326,7 +323,7 @@ final public class DiaImpl {
 						final File tempDir = (File)servletContext.getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/);
 						final int finalWidth = width;
 						final int finalHeight = height;
-						List<Callable<DiaExport>> tasks = new ArrayList<Callable<DiaExport>>(PIXEL_DENSITIES.length);
+						List<Callable<DiaExport>> tasks = new ArrayList<>(PIXEL_DENSITIES.length);
 						for(int i=0; i<PIXEL_DENSITIES.length; i++) {
 							final int pixelDensity = PIXEL_DENSITIES[i];
 							tasks.add(

@@ -37,7 +37,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T22:14:53-0500"
-		dateModified="2017-07-20T13:26:40-0500"
+		dateModified="2019-04-21T03:58:29-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-dia-servlet:pom.version}" />
@@ -52,7 +52,12 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			/>
+			>
+				<ul>
+					<li>Minimum Java version changed from 1.6 to 1.7.</li>
+					<li>Updated dependencies.</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release
