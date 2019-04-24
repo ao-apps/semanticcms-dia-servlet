@@ -91,7 +91,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.aoindustries</groupId><artifactId>ao-concurrent</artifactId><version>1.0.3-validation-SNAPSHOT</version>
+			<groupId>com.aoindustries</groupId><artifactId>ao-concurrent</artifactId><version>1.1.0-validation-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-encoding</artifactId><version>1.7.0-validation-SNAPSHOT</version>
