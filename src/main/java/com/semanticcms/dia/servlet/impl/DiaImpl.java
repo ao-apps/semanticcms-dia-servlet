@@ -28,7 +28,7 @@ import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextIn
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.ProcessResult;
-import com.aoindustries.net.UrlUtils;
+import com.aoindustries.servlet.ServletUtil;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
@@ -309,7 +309,6 @@ final public class DiaImpl {
 			if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
 				final PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, dia.getBook(), dia.getPath());
 				if(captureLevel == CaptureLevel.BODY) {
-					final String responseEncoding = response.getCharacterEncoding();
 					// Use default width when neither provided
 					int width = dia.getWidth();
 					int height = dia.getHeight();
@@ -359,7 +358,7 @@ final public class DiaImpl {
 						request.setAttribute(ID_SEQUENCE_REQUEST_ATTRIBUTE_NAME, idSequence);
 					}
 					// Write the img tag
-					String refId = PageIndex.getRefIdInPage(servletContext, request, dia.getPage(), dia.getId());
+					String refId = PageIndex.getRefIdInPage(request, dia.getPage(), dia.getId());
 					out.append("<img id=\"");
 					encodeTextInXhtmlAttribute(refId, out);
 					out.append("\" src=\"");
@@ -380,12 +379,7 @@ final public class DiaImpl {
 						;
 					}
 					encodeTextInXhtmlAttribute(
-						response.encodeURL(
-							UrlUtils.encodeUrlPath(
-								urlPath,
-								responseEncoding
-							)
-						),
+						response.encodeURL(ServletUtil.encodeURI(urlPath, response)),
 						out
 					);
 					out.append("\" width=\"");
@@ -443,12 +437,7 @@ final public class DiaImpl {
 								altExport
 							);
 							encodeTextInXhtmlAttribute(
-								response.encodeURL(
-									UrlUtils.encodeUrlPath(
-										altUrlPath,
-										responseEncoding
-									)
-								),
+								response.encodeURL(ServletUtil.encodeURI(altUrlPath, response)),
 								out
 							);
 							out.append("\">x");
