@@ -28,7 +28,7 @@ import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextIn
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.ProcessResult;
-import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
@@ -379,7 +379,7 @@ final public class DiaImpl {
 						;
 					}
 					encodeTextInXhtmlAttribute(
-						response.encodeURL(ServletUtil.encodeURI(urlPath, response)),
+						response.encodeURL(URIEncoder.encodeURI(urlPath)),
 						out
 					);
 					out.append("\" width=\"");
@@ -437,7 +437,7 @@ final public class DiaImpl {
 								altExport
 							);
 							encodeTextInXhtmlAttribute(
-								response.encodeURL(ServletUtil.encodeURI(altUrlPath, response)),
+								response.encodeURL(URIEncoder.encodeURI(altUrlPath)),
 								out
 							);
 							out.append("\">x");
