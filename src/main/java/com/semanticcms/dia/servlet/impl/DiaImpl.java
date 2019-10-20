@@ -29,6 +29,7 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.net.URIEncoder;
+import com.aoindustries.servlet.http.Html;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
@@ -309,6 +310,8 @@ final public class DiaImpl {
 			if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
 				final PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, dia.getBook(), dia.getPath());
 				if(captureLevel == CaptureLevel.BODY) {
+					Html.Serialization serialization = Html.Serialization.get(response);
+					Html.DocType doctype = Html.DocType.get(servletContext, request);
 					// Use default width when neither provided
 					int width = dia.getWidth();
 					int height = dia.getHeight();
@@ -411,7 +414,8 @@ final public class DiaImpl {
 					//	encodeTextInXhtmlAttribute(resourceFile.getName(), out);
 					//}
 					encodeTextInXhtmlAttribute(dia.getLabel(), out);
-					out.append("\" />");
+					out.append('"');
+					serialization.writeSelfClose(out);
 
 					if(export != null && PIXEL_DENSITIES.length > 1) {
 						assert resourceFile != null;
@@ -445,8 +449,12 @@ final public class DiaImpl {
 							out.append("</a>");
 						}
 						// Write script to hide alt links and select best based on device pixel ratio
-						out.append("<script type=\"text/javascript\">\n"
-							+ "// <![CDATA[\n");
+						out.append("<script");
+						if(doctype != Html.DocType.html5) {
+							out.append(" type=\"text/javascript\"");
+						}
+						out.append(">\n");
+						if(serialization == Html.Serialization.XHTML) out.append("// <![CDATA[\n");
 						// hide alt links
 						//for(int i=1; i<PIXEL_DENSITIES.length; i++) {
 						//	long altLinkNum = altLinkNums[i];
@@ -494,9 +502,9 @@ final public class DiaImpl {
 						}
 						out.append("\t\t}\n"
 							+ "\t})();\n"
-							+ "}\n"
-							+ "// ]]>\n"
-							+ "</script>");
+							+ "}\n");
+						if(serialization == Html.Serialization.XHTML) out.append("// ]]>\n");
+						out.append("</script>");
 					}
 				}
 			}
