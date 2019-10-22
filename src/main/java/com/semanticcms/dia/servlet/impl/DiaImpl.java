@@ -23,13 +23,15 @@
 package com.semanticcms.dia.servlet.impl;
 
 import com.aoindustries.awt.image.ImageSizeCache;
+import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInJavaScriptEncoder.encodeTextInJavaScript;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
+import com.aoindustries.html.Html;
+import com.aoindustries.html.servlet.HtmlEE;
 import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.net.URIEncoder;
-import com.aoindustries.servlet.http.Html;
 import com.aoindustries.servlet.http.LastModifiedServlet;
 import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
@@ -48,6 +50,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -301,7 +304,7 @@ final public class DiaImpl {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Appendable out,
+		Writer out,
 		Dia dia
 	) throws ServletException, IOException {
 		try {
@@ -310,8 +313,7 @@ final public class DiaImpl {
 			if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
 				final PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, dia.getBook(), dia.getPath());
 				if(captureLevel == CaptureLevel.BODY) {
-					Html.Serialization serialization = Html.Serialization.get(response);
-					Html.DocType doctype = Html.DocType.get(servletContext, request);
+					Html html = HtmlEE.get(servletContext, request, out);
 					// Use default width when neither provided
 					int width = dia.getWidth();
 					int height = dia.getHeight();
@@ -362,9 +364,9 @@ final public class DiaImpl {
 					}
 					// Write the img tag
 					String refId = PageIndex.getRefIdInPage(request, dia.getPage(), dia.getId());
-					out.append("<img id=\"");
+					out.write("<img id=\"");
 					encodeTextInXhtmlAttribute(refId, out);
-					out.append("\" src=\"");
+					out.write("\" src=\"");
 					final String urlPath;
 					if(export != null) {
 						urlPath = buildUrlPath(
@@ -385,7 +387,7 @@ final public class DiaImpl {
 						response.encodeURL(URIEncoder.encodeURI(urlPath)),
 						out
 					);
-					out.append("\" width=\"");
+					out.write("\" width=\"");
 					encodeTextInXhtmlAttribute(
 						Integer.toString(
 							export!=null
@@ -396,7 +398,7 @@ final public class DiaImpl {
 						),
 						out
 					);
-					out.append("\" height=\"");
+					out.write("\" height=\"");
 					encodeTextInXhtmlAttribute(
 						Integer.toString(
 							export!=null
@@ -407,15 +409,15 @@ final public class DiaImpl {
 						),
 						out
 					);
-					out.append("\" alt=\"");
+					out.write("\" alt=\"");
 					//if(resourceFile == null) {
 					//	LinkImpl.writeBrokenPathInXhtmlAttribute(pageRef, out);
 					//} else {
 					//	encodeTextInXhtmlAttribute(resourceFile.getName(), out);
 					//}
 					encodeTextInXhtmlAttribute(dia.getLabel(), out);
-					out.append('"');
-					serialization.writeSelfClose(out);
+					out.write('"');
+					html.selfClose();
 
 					if(export != null && PIXEL_DENSITIES.length > 1) {
 						assert resourceFile != null;
@@ -427,11 +429,11 @@ final public class DiaImpl {
 							// Get the thumbnail image in alternate pixel density
 							DiaExport altExport = exports.get(i);
 							// Write the a tag to additional pixel densities
-							out.append("<a id=\"" + ALT_LINK_ID_PREFIX);
+							out.write("<a id=\"" + ALT_LINK_ID_PREFIX);
 							long altLinkNum = idSequence.getNextSequenceValue();
 							altLinkNums[i] = altLinkNum;
-							out.append(Long.toString(altLinkNum));
-							out.append("\" style=\"display:none\" href=\"");
+							out.write(Long.toString(altLinkNum));
+							out.write("\" style=\"display:none\" href=\"");
 							final String altUrlPath = buildUrlPath(
 								request,
 								pageRef,
@@ -444,71 +446,66 @@ final public class DiaImpl {
 								response.encodeURL(URIEncoder.encodeURI(altUrlPath)),
 								out
 							);
-							out.append("\">x");
+							out.write("\">x");
 							encodeTextInXhtml(Integer.toString(pixelDensity), out);
-							out.append("</a>");
+							out.write("</a>");
 						}
 						// Write script to hide alt links and select best based on device pixel ratio
-						out.append("<script");
-						if(doctype != Html.DocType.html5) {
-							out.append(" type=\"text/javascript\"");
-						}
-						out.append(">\n");
-						if(serialization == Html.Serialization.XHTML) out.append("// <![CDATA[\n");
-						// hide alt links
-						//for(int i=1; i<PIXEL_DENSITIES.length; i++) {
-						//	long altLinkNum = altLinkNums[i];
-						//	out
-						//		.append("document.getElementById(\"" + ALT_LINK_ID_PREFIX)
-						//		.append(Long.toString(altLinkNum))
-						//		.append("\").style.display = \"none\";\n");
-						//}
-						// select best based on device pixel ratio
-						out.append("if(window.devicePixelRatio) {\n");
-						// Closure for locally scoped variables
-						out.append("\t(function () {\n");
-						// out.append("\twindow.alert(\"devicePixelRatio=\" + window.devicePixelRatio);\n");
-						// Function to update src
-						out.append("\t\tfunction updateImageSrc() {\n");
-						for(int i=PIXEL_DENSITIES.length - 1; i >= 0; i--) {
-							long altLinkNum = altLinkNums[i];
-							out.append("\t\t\t");
-							if(i != (PIXEL_DENSITIES.length - 1)) out.append("else ");
-							if(i > 0) {
-								out
-									.append("if(window.devicePixelRatio > ")
-									.append(Integer.toString(PIXEL_DENSITIES[i-1]))
-									.append(") ");
+						try (MediaWriter script = html.script().out()) {
+							// hide alt links
+							//for(int i=1; i<PIXEL_DENSITIES.length; i++) {
+							//	long altLinkNum = altLinkNums[i];
+							//	scriptOut
+							//		.write("document.getElementById(\"" + ALT_LINK_ID_PREFIX)
+							//		.write(Long.toString(altLinkNum))
+							//		.write("\").style.display = \"none\";\n");
+							//}
+							// select best based on device pixel ratio
+							script.write("if(window.devicePixelRatio) {\n");
+							// Closure for locally scoped variables
+							script.write("\t(function () {\n");
+							// scriptOut.write("\twindow.alert(\"devicePixelRatio=\" + window.devicePixelRatio);\n");
+							// Function to update src
+							script.write("\t\tfunction updateImageSrc() {\n");
+							for(int i=PIXEL_DENSITIES.length - 1; i >= 0; i--) {
+								long altLinkNum = altLinkNums[i];
+								script.write("\t\t\t");
+								if(i != (PIXEL_DENSITIES.length - 1)) script.write("else ");
+								if(i > 0) {
+									script.write("if(window.devicePixelRatio > ");
+									script.write(Integer.toString(PIXEL_DENSITIES[i-1]));
+									script.write(") ");
+								}
+								script.write("{\n"
+										+ "\t\t\t\tdocument.getElementById(\"");
+								encodeTextInJavaScript(refId, script);
+								script.write("\").src = document.getElementById(\"" + ALT_LINK_ID_PREFIX);
+								script.write(Long.toString(altLinkNum));
+								script.write("\").getAttribute(\"href\");\n"
+										+ "\t\t\t}\n");
 							}
-							out.append("{\n"
-									+ "\t\t\t\tdocument.getElementById(\"");
-							encodeTextInJavaScript(refId, out);
-							out
-								.append("\").src = document.getElementById(\"" + ALT_LINK_ID_PREFIX)
-								.append(Long.toString(altLinkNum))
-								.append("\").getAttribute(\"href\");\n"
-									+ "\t\t\t}\n");
+							script.write("\t\t}\n"
+								// Perform initial setup
+								+ "\t\tupdateImageSrc();\n");
+							// Change image source when pixel ratio changes
+							script.write("\t\tif(window.matchMedia) {\n");
+							for(int i=0; i<PIXEL_DENSITIES.length; i++) {
+								int pixelDensity = PIXEL_DENSITIES[i];
+								script.write("\t\t\twindow.matchMedia(\"screen and (max-resolution: ");
+								script.write(Integer.toString(pixelDensity));
+								script.write("dppx)\").addListener(function(e) {\n"
+										+ "\t\t\t\tupdateImageSrc();\n"
+										+ "\t\t\t});\n");
+							}
+							script.write("\t\t}\n"
+								+ "\t})();\n"
+								+ "}\n");
 						}
-						out.append("\t\t}\n"
-							// Perform initial setup
-							+ "\t\tupdateImageSrc();\n");
-						// Change image source when pixel ratio changes
-						out.append("\t\tif(window.matchMedia) {\n");
-						for(int i=0; i<PIXEL_DENSITIES.length; i++) {
-							int pixelDensity = PIXEL_DENSITIES[i];
-							out.append("\t\t\twindow.matchMedia(\"screen and (max-resolution: ").append(Integer.toString(pixelDensity)).append("dppx)\").addListener(function(e) {\n"
-									+ "\t\t\t\tupdateImageSrc();\n"
-									+ "\t\t\t});\n");
-						}
-						out.append("\t\t}\n"
-							+ "\t})();\n"
-							+ "}\n");
-						if(serialization == Html.Serialization.XHTML) out.append("// ]]>\n");
-						out.append("</script>");
 					}
 				}
 			}
 		} catch(InterruptedException e) {
+			// TODO: Looks like we have more of these to get rid of
 			// Restore the interrupted status
 			Thread.currentThread().interrupt();
 			throw new ServletException(e);
