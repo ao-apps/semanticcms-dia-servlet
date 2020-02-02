@@ -364,9 +364,6 @@ final public class DiaImpl {
 					}
 					// Write the img tag
 					String refId = PageIndex.getRefIdInPage(request, dia.getPage(), dia.getId());
-					out.write("<img id=\"");
-					encodeTextInXhtmlAttribute(refId, out);
-					out.write("\" src=\"");
 					final String urlPath;
 					if(export != null) {
 						urlPath = buildUrlPath(
@@ -383,41 +380,28 @@ final public class DiaImpl {
 							+ MISSING_IMAGE_PATH
 						;
 					}
-					encodeTextInXhtmlAttribute(
-						response.encodeURL(URIEncoder.encodeURI(urlPath)),
-						out
-					);
-					out.write("\" width=\"");
-					encodeTextInXhtmlAttribute(
-						Integer.toString(
+					html.img()
+						.id(refId)
+						.src(response.encodeURL(URIEncoder.encodeURI(urlPath)))
+						.width(
 							export!=null
 							? (export.getWidth() / PIXEL_DENSITIES[0])
 							: width!=0
 							? width
 							: (MISSING_IMAGE_WIDTH * height / MISSING_IMAGE_HEIGHT)
-						),
-						out
-					);
-					out.write("\" height=\"");
-					encodeTextInXhtmlAttribute(
-						Integer.toString(
+						).height(
 							export!=null
 							? (export.getHeight() / PIXEL_DENSITIES[0])
 							: height!=0
 							? height
 							: (MISSING_IMAGE_HEIGHT * width / MISSING_IMAGE_WIDTH)
-						),
-						out
-					);
-					out.write("\" alt=\"");
+						).alt(dia.getLabel())
+						.__();
 					//if(resourceFile == null) {
 					//	LinkImpl.writeBrokenPathInXhtmlAttribute(pageRef, out);
 					//} else {
 					//	encodeTextInXhtmlAttribute(resourceFile.getName(), out);
 					//}
-					encodeTextInXhtmlAttribute(dia.getLabel(), out);
-					out.write('"');
-					html.selfClose();
 
 					if(export != null && PIXEL_DENSITIES.length > 1) {
 						assert resourceFile != null;
