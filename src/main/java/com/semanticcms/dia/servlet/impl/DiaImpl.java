@@ -26,9 +26,7 @@ import com.aoindustries.awt.image.ImageSizeCache;
 import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInJavaScriptEncoder.encodeTextInJavaScript;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
-import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.html.Html;
-import com.aoindustries.html.servlet.HtmlEE;
 import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.net.URIEncoder;
@@ -50,7 +48,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -171,74 +168,71 @@ final public class DiaImpl {
 		try {
 			exportConcurrencyLimiter.executeSerialized(
 				tmpFile,
-				new Callable<Void>() {
-					@Override
-					public Void call() throws IOException {
-						if(!tmpFile.exists() || diaFile.lastModified() >= tmpFile.lastModified()) {
-							// Determine size for scaling
-							final String sizeParam;
-							if(width==null) {
-								if(height==null) {
-									sizeParam = null;
-								} else {
-									sizeParam = "x" + height;
-								}
+				() -> {
+					if(!tmpFile.exists() || diaFile.lastModified() >= tmpFile.lastModified()) {
+						// Determine size for scaling
+						final String sizeParam;
+						if(width==null) {
+							if(height==null) {
+								sizeParam = null;
 							} else {
-								if(height==null) {
-									sizeParam = width + "x";
-								} else {
-									sizeParam = width + "x" + height;
-								}
+								sizeParam = "x" + height;
 							}
-							// Build the command
-							final String diaExePath = getDiaExportPath();
-							final String[] command;
-							if(sizeParam == null) {
-								command = new String[] {
-									diaExePath,
-									"--export=" + tmpFile.getCanonicalPath(),
-									"--filter=png",
-									"--log-to-stderr",
-									diaFile.getCanonicalPath()
-								};
+						} else {
+							if(height==null) {
+								sizeParam = width + "x";
 							} else {
-								command = new String[] {
-									diaExePath,
-									"--export=" + tmpFile.getCanonicalPath(),
-									"--filter=png",
-									"--size=" + sizeParam,
-									"--log-to-stderr",
-									diaFile.getCanonicalPath()
-								};
-							}
-							// Export using dia
-							ProcessResult result = ProcessResult.exec(command);
-							int exitVal = result.getExitVal();
-							if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
-							if(!isWindows()) {
-								// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
-								// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
-								String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
-								// Read the standard error, if any one line matches the expected line, then it is OK
-								// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
-								boolean foundNormalOutput = false;
-								String stderr = result.getStderr();
-								try (BufferedReader errIn = new BufferedReader(new StringReader(stderr))) {
-									String line;
-									while((line = errIn.readLine())!=null) {
-										if(line.equals(normalOutput)) {
-											foundNormalOutput = true;
-											break;
-										}
-									}
-								}
-								if(!foundNormalOutput) {
-									throw new IOException(diaExePath + ": " + stderr);
-								}
+								sizeParam = width + "x" + height;
 							}
 						}
-						return null;
+						// Build the command
+						final String diaExePath = getDiaExportPath();
+						final String[] command;
+						if(sizeParam == null) {
+							command = new String[] {
+								diaExePath,
+								"--export=" + tmpFile.getCanonicalPath(),
+								"--filter=png",
+								"--log-to-stderr",
+								diaFile.getCanonicalPath()
+							};
+						} else {
+							command = new String[] {
+								diaExePath,
+								"--export=" + tmpFile.getCanonicalPath(),
+								"--filter=png",
+								"--size=" + sizeParam,
+								"--log-to-stderr",
+								diaFile.getCanonicalPath()
+							};
+						}
+						// Export using dia
+						ProcessResult result = ProcessResult.exec(command);
+						int exitVal = result.getExitVal();
+						if(exitVal != 0) throw new IOException(diaExePath + ": non-zero exit value: " + exitVal);
+						if(!isWindows()) {
+							// Dia does not set non-zero exit value, instead, it writes both errors and normal output to stderr
+							// (Dia version 0.97.2, compiled 23:51:04 Apr 13 2012)
+							String normalOutput = diaFile.getCanonicalPath() + " --> " + tmpFile.getCanonicalPath();
+							// Read the standard error, if any one line matches the expected line, then it is OK
+							// other lines include stuff like: Xlib:  extension "RANDR" missing on display ":0".
+							boolean foundNormalOutput = false;
+							String stderr = result.getStderr();
+							try (BufferedReader errIn = new BufferedReader(new StringReader(stderr))) {
+								String line;
+								while((line = errIn.readLine())!=null) {
+									if(line.equals(normalOutput)) {
+										foundNormalOutput = true;
+										break;
+									}
+								}
+							}
+							if(!foundNormalOutput) {
+								throw new IOException(diaExePath + ": " + stderr);
+							}
+						}
 					}
+					return null;
 				}
 			);
 		} catch(ExecutionException e) {
@@ -304,7 +298,7 @@ final public class DiaImpl {
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Writer out,
+		Html html,
 		Dia dia
 	) throws ServletException, IOException {
 		try {
@@ -313,7 +307,6 @@ final public class DiaImpl {
 			if(captureLevel.compareTo(CaptureLevel.META) >= 0) {
 				final PageRef pageRef = PageRefResolver.getPageRef(servletContext, request, dia.getBook(), dia.getPath());
 				if(captureLevel == CaptureLevel.BODY) {
-					Html html = HtmlEE.get(servletContext, request, out);
 					// Use default width when neither provided
 					int width = dia.getWidth();
 					int height = dia.getHeight();
@@ -331,16 +324,13 @@ final public class DiaImpl {
 						for(int i=0; i<PIXEL_DENSITIES.length; i++) {
 							final int pixelDensity = PIXEL_DENSITIES[i];
 							tasks.add(
-								new Callable<DiaExport>() {
-									@Override
-									public DiaExport call() throws InterruptedException, IOException {
-										return exportDiagram(
-											pageRef,
-											finalWidth==0 ? null : (finalWidth * pixelDensity),
-											finalHeight==0 ? null : (finalHeight * pixelDensity),
-											tempDir
-										);
-									}
+								() -> {
+									return exportDiagram(
+										pageRef,
+										finalWidth==0 ? null : (finalWidth * pixelDensity),
+										finalHeight==0 ? null : (finalHeight * pixelDensity),
+										tempDir
+									);
 								}
 							);
 						}
@@ -413,11 +403,11 @@ final public class DiaImpl {
 							// Get the thumbnail image in alternate pixel density
 							DiaExport altExport = exports.get(i);
 							// Write the a tag to additional pixel densities
-							out.write("<a id=\"" + ALT_LINK_ID_PREFIX);
+							html.out.write("<a id=\"" + ALT_LINK_ID_PREFIX);
 							long altLinkNum = idSequence.getNextSequenceValue();
 							altLinkNums[i] = altLinkNum;
-							out.write(Long.toString(altLinkNum));
-							out.write("\" style=\"display:none\" href=\"");
+							encodeTextInXhtmlAttribute(Long.toString(altLinkNum), html.out);
+							html.out.write("\" style=\"display:none\" href=\"");
 							final String altUrlPath = buildUrlPath(
 								request,
 								pageRef,
@@ -428,11 +418,11 @@ final public class DiaImpl {
 							);
 							encodeTextInXhtmlAttribute(
 								response.encodeURL(URIEncoder.encodeURI(altUrlPath)),
-								out
+								html.out
 							);
-							out.write("\">x");
-							encodeTextInXhtml(Integer.toString(pixelDensity), out);
-							out.write("</a>");
+							html.out.write("\">x");
+							html.text(pixelDensity);
+							html.out.write("</a>");
 						}
 						// Write script to hide alt links and select best based on device pixel ratio
 						try (MediaWriter script = html.script().out__()) {
