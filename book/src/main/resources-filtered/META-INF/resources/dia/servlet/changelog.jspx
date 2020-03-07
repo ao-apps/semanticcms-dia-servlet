@@ -37,7 +37,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T22:14:53-0500"
-		dateModified="2020-02-14T01:49:53-0600"
+		dateModified="2020-03-07T06:01:29-0600"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-dia-servlet:pom.version}" />
@@ -49,12 +49,16 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			<changelog:release
 				projectName="@{documented.name}"
 				version="#{version}"
-				groupId="@{documented.groupId}"
+				groupId="@{project.groupId}"
 				artifactId="@{documented.artifactId}"
-				scmUrl="@{documented.scm.url}"
+				scmUrl="@{project.scm.url}"
 			>
 				<ul>
 					<li>Minimum Java version changed from 1.7 to 1.8.</li>
+					<li>
+						Reduced use of property substitutions in <code>pom.xml</code>.
+						This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
+					</li>
 					<li>Using <ao:a href="https://aoindustries.com/ao-fluent-html/">AO Fluent HTML</ao:a> for HTML generation.</li>
 					<li>
 						Now outputting HTML or XHTML based on the current response content type.
@@ -68,9 +72,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.6.0"
 			datePublished="2019-10-12T03:16:57-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Updated dependencies.</li>
@@ -81,9 +85,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.5.1"
 			datePublished="2019-06-22T22:09:59-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Using managed dependencies:
@@ -99,9 +103,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.5.0"
 			datePublished="2019-04-21T04:08:44-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Minimum Java version changed from 1.6 to 1.7.</li>
@@ -113,9 +117,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.4.3"
 			datePublished="2017-07-20T13:26:40-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>New release for bug fixes in underlying <ao:a href="https://aoindustries.com/ao-encoding/">AO Encoding</ao:a> library.</li>
@@ -128,9 +132,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.4.2"
 			datePublished="2016-11-16T16:57:24-0600"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>New <ao:a href="https://aoindustries.com/ao-oss-parent/">AO OSS Parent</ao:a> POM to simplify <code>pom.xml</code> files.</li>
@@ -145,9 +149,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.4.1"
 			datePublished="2016-10-20T18:59:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Improved Javadoc formatting.</li>
@@ -159,9 +163,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.4.0"
 			datePublished="2016-10-04T21:51:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Improved Javadoc formatting.</li>
@@ -180,9 +184,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.3"
 			datePublished="2016-09-11T16:06:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Using dependencyManagement instead of dependency for junit.</li>
@@ -193,9 +197,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.2"
 			datePublished="2016-09-03T10:05:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Improved Maven configuration for Java EE 6 dependencies.</li>
@@ -206,9 +210,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.1"
 			datePublished="2016-08-21T17:23:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>New parent POM for all <core:link book="/" page="/index.jspx" /> components.</li>
@@ -219,9 +223,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			projectName="@{documented.name}"
 			version="1.0"
 			datePublished="2016-08-19T14:54:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Diagrams are now elements.</li>
