@@ -25,7 +25,6 @@ package com.semanticcms.dia.servlet.impl;
 import com.aoindustries.awt.image.ImageSizeCache;
 import com.aoindustries.concurrent.ConcurrencyLimiter;
 import com.aoindustries.encoding.MediaWriter;
-import static com.aoindustries.encoding.TextInJavaScriptEncoder.encodeTextInJavaScript;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import com.aoindustries.exception.WrappedException;
 import com.aoindustries.html.Html;
@@ -450,12 +449,8 @@ final public class DiaImpl {
 									script.write(Integer.toString(PIXEL_DENSITIES[i-1]));
 									script.write(") ");
 								}
-								script.write("{\n"
-										+ "\t\t\t\tdocument.getElementById(\"");
-								encodeTextInJavaScript(refId, script);
-								script.write("\").src = document.getElementById(\"" + ALT_LINK_ID_PREFIX);
-								script.write(Long.toString(altLinkNum));
-								script.write("\").getAttribute(\"href\");\n"
+								script.append("{\n"
+										+ "\t\t\t\tdocument.getElementById(").text(refId).append(").src = document.getElementById(\"" + ALT_LINK_ID_PREFIX).append(Long.toString(altLinkNum)).append("\").getAttribute(\"href\");\n"
 										+ "\t\t\t}\n");
 							}
 							script.write("\t\t}\n"

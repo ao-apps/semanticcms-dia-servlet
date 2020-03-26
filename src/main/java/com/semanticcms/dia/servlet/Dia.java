@@ -192,7 +192,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 				servletContext,
 				request,
 				response,
-				(capturedOut == null) ? null : HtmlEE.get(servletContext, request, capturedOut),
+				(capturedOut == null) ? null : HtmlEE.get(servletContext, request, response, capturedOut),
 				element
 			);
 		} finally {
