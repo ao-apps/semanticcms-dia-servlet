@@ -478,9 +478,6 @@ final public class DiaImpl {
 				}
 			}
 		} catch(InterruptedException e) {
-			// TODO: Looks like we have more of these to get rid of
-			// Restore the interrupted status
-			Thread.currentThread().interrupt();
 			throw new ServletException(e);
 		}
 	}
