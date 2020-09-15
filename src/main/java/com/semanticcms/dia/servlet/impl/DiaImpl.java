@@ -34,6 +34,7 @@ import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.lastmodified.LastModifiedServlet;
 import com.aoindustries.util.Sequence;
 import com.aoindustries.util.UnsynchronizedSequence;
+import com.aoindustries.util.concurrent.ExecutionExceptions;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.ConcurrencyCoordinator;
@@ -235,9 +236,14 @@ final public class DiaImpl {
 				}
 			);
 		} catch(ExecutionException e) {
-			Throwable cause = e.getCause();
-			if(cause instanceof IOException) throw (IOException)cause;
-			if(cause instanceof RuntimeException) throw (RuntimeException)cause;
+			// Maintain expected exception types while not losing stack trace
+			// TODO: Make a specialization for IOException, like done for SQLException?
+			ExecutionExceptions.wrapAndThrowWithCause(e, FileNotFoundException.class, (eeCause, ee) -> {
+				FileNotFoundException fnf = new FileNotFoundException(eeCause.getMessage());
+				fnf.initCause(ee);
+				return fnf;
+			});
+			ExecutionExceptions.wrapAndThrow(e, IOException.class, IOException::new);
 			throw new WrappedException(e);
 		}
 		// Get actual dimensions
@@ -336,11 +342,9 @@ final public class DiaImpl {
 						try {
 							exports = ConcurrencyCoordinator.getRecommendedExecutor(servletContext, request).callAll(tasks);
 						} catch(ExecutionException e) {
-							Throwable cause = e.getCause();
-							if(cause instanceof RuntimeException) throw ((RuntimeException)cause);
-							if(cause instanceof InterruptedException) throw ((InterruptedException)cause);
-							if(cause instanceof IOException) throw ((IOException)cause);
-							throw new WrappedException(e);
+							// Maintain expected exception types while not losing stack trace
+							ExecutionExceptions.wrapAndThrow(e, IOException.class, IOException::new);
+							throw new ServletException(e);
 						}
 					}
 					// Get the thumbnail image in default pixel density
