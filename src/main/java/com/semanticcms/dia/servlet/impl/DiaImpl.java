@@ -28,7 +28,6 @@ import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import com.aoindustries.exception.WrappedException;
 import com.aoindustries.html.Html;
-import com.aoindustries.io.FileUtils;
 import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.lastmodified.LastModifiedServlet;
@@ -48,6 +47,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -162,7 +162,7 @@ final public class DiaImpl {
 			);
 			// Make temp directory if needed (and all parents)
 			tmpDir = tmpFile.getParentFile();
-			if(!tmpDir.exists()) FileUtils.mkdirs(tmpDir);
+			if(!tmpDir.exists()) Files.createDirectories(tmpDir.toPath());
 		}
 		// Re-export when missing or timestamps indicate needs recreated
 		try {
