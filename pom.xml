@@ -71,6 +71,11 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 									<artifactItems>
 										<!-- Direct -->
 										<artifactItem>
+											<groupId>com.aoindustries</groupId><artifactId>ao-encoding-taglib</artifactId>
+											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
+											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding-taglib</outputDirectory>
+										</artifactItem>
+										<artifactItem>
 											<groupId>com.aoindustries</groupId><artifactId>ao-fluent-html</artifactId>
 											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
 											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-fluent-html</outputDirectory>
@@ -89,11 +94,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 											<groupId>com.aoindustries</groupId><artifactId>ao-net-types</artifactId>
 											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
 											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-net-types</outputDirectory>
-										</artifactItem>
-										<artifactItem>
-											<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId>
-											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
-											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-taglib</outputDirectory>
 										</artifactItem>
 										<!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
 										<!-- ao-javadoc-offline: <groupId>javax.servlet.jsp</groupId><artifactId>javax.servlet.jsp-api</artifactId> -->
@@ -138,6 +138,10 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 							<offlineLinks>
 								<!-- Direct -->
 								<offlineLink>
+									<url>https://aoindustries.com/ao-encoding/taglib/apidocs/</url>
+									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding-taglib</location>
+								</offlineLink>
+								<offlineLink>
 									<url>https://aoindustries.com/ao-fluent-html/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-fluent-html</location>
 								</offlineLink>
@@ -152,10 +156,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 								<offlineLink>
 									<url>https://aoindustries.com/ao-net-types/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-net-types</location>
-								</offlineLink>
-								<offlineLink>
-									<url>https://aoindustries.com/ao-taglib/apidocs/</url>
-									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-taglib</location>
 								</offlineLink>
 								<!-- Java EE: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
 								<!-- Java EE: <groupId>javax.servlet.jsp</groupId><artifactId>javax.servlet.jsp-api</artifactId> -->
@@ -205,6 +205,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<dependencies>
 			<!-- Direct -->
 			<dependency>
+				<groupId>com.aoindustries</groupId><artifactId>ao-encoding-taglib</artifactId><version>1.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-fluent-html</artifactId><version>0.2.0${POST-SNAPSHOT}</version>
 			</dependency>
 			<dependency>
@@ -215,9 +218,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			</dependency>
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-net-types</artifactId><version>1.2.1${POST-SNAPSHOT}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId><version>6.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<!-- javaee-web-api-bom: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
 			<!-- javaee-web-api-bom: <groupId>javax.servlet.jsp</groupId><artifactId>javax.servlet.jsp-api</artifactId> -->
@@ -266,6 +266,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			</dependency>
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-servlet-util</artifactId><version>2.2.1${POST-SNAPSHOT}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId><version>6.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-tempfiles</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
@@ -318,6 +321,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 	<dependencies>
 		<!-- Direct -->
 		<dependency>
+			<groupId>com.aoindustries</groupId><artifactId>ao-encoding-taglib</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-fluent-html</artifactId>
 		</dependency>
 		<dependency>
@@ -328,9 +334,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-net-types</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
