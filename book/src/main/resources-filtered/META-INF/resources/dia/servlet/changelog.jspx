@@ -37,7 +37,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T22:14:53-0500"
-		dateModified="2020-03-28T23:33:40-05:00"
+		dateModified="2020-11-18T23:12:14-06:00"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-dia-servlet:pom.version}" />
@@ -52,7 +52,11 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 				groupId="@{project.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{project.scm.url}"
-			/>
+			>
+				<ul>
+					<li>Updated dependencies.</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release

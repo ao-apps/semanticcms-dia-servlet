@@ -29,7 +29,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.semanticcms</groupId><artifactId>semanticcms-dia-servlet</artifactId><version>1.7.0-POST-SNAPSHOT</version>
+	<groupId>com.semanticcms</groupId><artifactId>semanticcms-dia-servlet</artifactId><version>1.8.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -81,6 +81,11 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding</outputDirectory>
 										</artifactItem>
 										<artifactItem>
+											<groupId>com.aoindustries</groupId><artifactId>ao-encoding-taglib</artifactId>
+											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
+											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding-taglib</outputDirectory>
+										</artifactItem>
+										<artifactItem>
 											<groupId>com.aoindustries</groupId><artifactId>ao-fluent-html</artifactId>
 											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
 											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-fluent-html</outputDirectory>
@@ -109,11 +114,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 											<groupId>com.aoindustries</groupId><artifactId>ao-servlet-last-modified</artifactId>
 											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
 											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-servlet-last-modified</outputDirectory>
-										</artifactItem>
-										<artifactItem>
-											<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId>
-											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
-											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-taglib</outputDirectory>
 										</artifactItem>
 										<artifactItem>
 											<groupId>com.aoindustries</groupId><artifactId>aocode-public</artifactId>
@@ -156,6 +156,10 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding</location>
 								</offlineLink>
 								<offlineLink>
+									<url>https://aoindustries.com/ao-encoding/taglib/apidocs/</url>
+									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-encoding-taglib</location>
+								</offlineLink>
+								<offlineLink>
 									<url>https://aoindustries.com/ao-fluent-html/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-fluent-html</location>
 								</offlineLink>
@@ -178,10 +182,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 								<offlineLink>
 									<url>https://aoindustries.com/ao-servlet-last-modified/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-servlet-last-modified</location>
-								</offlineLink>
-								<offlineLink>
-									<url>https://aoindustries.com/ao-taglib/apidocs/</url>
-									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-taglib</location>
 								</offlineLink>
 								<offlineLink>
 									<url>https://aoindustries.com/aocode-public/apidocs/</url>
@@ -229,6 +229,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 				<groupId>com.aoindustries</groupId><artifactId>ao-encoding</artifactId><version>3.1.0${POST-SNAPSHOT}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.aoindustries</groupId><artifactId>ao-encoding-taglib</artifactId><version>1.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-fluent-html</artifactId><version>0.2.0${POST-SNAPSHOT}</version>
 			</dependency>
 			<dependency>
@@ -247,9 +250,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 				<groupId>com.aoindustries</groupId><artifactId>ao-servlet-last-modified</artifactId><version>1.2.0${POST-SNAPSHOT}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId><version>6.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
-			</dependency>
-			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>aocode-public</artifactId><version>4.3.0${POST-SNAPSHOT}</version>
 			</dependency>
 			<!-- javaee-web-api-bom: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
@@ -258,7 +258,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 				<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-model</artifactId><version>1.12.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
-				<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId><version>1.15.1${POST-SNAPSHOT}</version>
+				<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId><version>1.16.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
 				<groupId>com.semanticcms</groupId><artifactId>semanticcms-dia-model</artifactId><version>1.4.6${POST-SNAPSHOT}</version>
@@ -278,6 +278,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			</dependency>
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-servlet-util</artifactId><version>2.2.1${POST-SNAPSHOT}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId><version>6.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-tempfiles</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
@@ -318,6 +321,9 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 			<groupId>com.aoindustries</groupId><artifactId>ao-encoding</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.aoindustries</groupId><artifactId>ao-encoding-taglib</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-fluent-html</artifactId>
 		</dependency>
 		<dependency>
@@ -334,9 +340,6 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-servlet-last-modified</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.aoindustries</groupId><artifactId>ao-taglib</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>aocode-public</artifactId>

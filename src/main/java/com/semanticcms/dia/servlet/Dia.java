@@ -22,10 +22,10 @@
  */
 package com.semanticcms.dia.servlet;
 
+import com.aoindustries.encoding.taglib.EncodingBufferedSimpleTag;
 import com.aoindustries.html.servlet.HtmlEE;
 import com.aoindustries.io.buffer.BufferResult;
 import com.aoindustries.io.buffer.BufferWriter;
-import com.aoindustries.taglib.AutoEncodingBufferedTag;
 import com.semanticcms.core.model.ElementContext;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.Element;
@@ -183,7 +183,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 		super.doBody(captureLevel, body);
 		BufferWriter capturedOut;
 		if(captureLevel == CaptureLevel.BODY) {
-			capturedOut = AutoEncodingBufferedTag.newBufferWriter(request);
+			capturedOut = EncodingBufferedSimpleTag.newBufferWriter(request);
 		} else {
 			capturedOut = null;
 		}
