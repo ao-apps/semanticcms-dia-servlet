@@ -23,7 +23,7 @@
 package com.semanticcms.dia.servlet.impl;
 
 import com.aoindustries.awt.image.ImageSizeCache;
-import com.aoindustries.concurrent.ConcurrencyLimiter;
+import com.aoindustries.concurrent.KeyedConcurrencyReducer;
 import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import com.aoindustries.exception.WrappedException;
@@ -131,7 +131,7 @@ final public class DiaImpl {
 	/**
 	 * Make sure each diagram and scaling is only exported once when under concurrent access.
 	 */
-	private static final ConcurrencyLimiter<File,Void> exportConcurrencyLimiter = new ConcurrencyLimiter<>();
+	private static final KeyedConcurrencyReducer<File,Void> exportConcurrencyLimiter = new KeyedConcurrencyReducer<>();
 
 	public static DiaExport exportDiagram(
 		PageRef pageRef,
