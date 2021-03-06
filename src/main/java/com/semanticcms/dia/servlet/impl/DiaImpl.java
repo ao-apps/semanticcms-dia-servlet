@@ -1,6 +1,6 @@
 /*
  * semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2019, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -25,9 +25,11 @@ package com.semanticcms.dia.servlet.impl;
 import com.aoindustries.awt.image.ImageSizeCache;
 import com.aoindustries.concurrent.KeyedConcurrencyReducer;
 import com.aoindustries.encoding.MediaWriter;
-import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.encodeTextInXhtmlAttribute;
 import com.aoindustries.exception.WrappedException;
-import com.aoindustries.html.Document;
+import com.aoindustries.html.A_factory;
+import com.aoindustries.html.IMG_factory;
+import com.aoindustries.html.PhrasingContent;
+import com.aoindustries.html.SCRIPT_factory;
 import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.lastmodified.LastModifiedServlet;
@@ -247,7 +249,7 @@ final public class DiaImpl {
 		}
 		// Get actual dimensions
 		Dimension pngSize = ImageSizeCache.getImageSize(tmpFile);
-		
+
 		return new DiaExport(
 			tmpFile,
 			pngSize.width,
@@ -298,11 +300,14 @@ final public class DiaImpl {
 		return urlPath.toString();
 	}
 
-	public static void writeDiaImpl(
+	/**
+	 * @param <__>  {@link PhrasingContent} provides {@link IMG_factory}, {@link A_factory}, and {@link SCRIPT_factory}.
+	 */
+	public static <__ extends PhrasingContent<__>> void writeDiaImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		Document document,
+		__ content,
 		Dia dia
 	) throws ServletException, IOException {
 		try {
@@ -324,18 +329,18 @@ final public class DiaImpl {
 						final File tempDir = (File)servletContext.getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/);
 						final int finalWidth = width;
 						final int finalHeight = height;
+						// TODO: Avoid concurrent tasks when all diagrams are already up-to-date?
+						// TODO: Fetch resource file once when first needed?
 						List<Callable<DiaExport>> tasks = new ArrayList<>(PIXEL_DENSITIES.length);
 						for(int i=0; i<PIXEL_DENSITIES.length; i++) {
 							final int pixelDensity = PIXEL_DENSITIES[i];
 							tasks.add(
-								() -> {
-									return exportDiagram(
-										pageRef,
-										finalWidth==0 ? null : (finalWidth * pixelDensity),
-										finalHeight==0 ? null : (finalHeight * pixelDensity),
-										tempDir
-									);
-								}
+								() -> exportDiagram(
+									pageRef,
+									finalWidth==0 ? null : (finalWidth * pixelDensity),
+									finalHeight==0 ? null : (finalHeight * pixelDensity),
+									tempDir
+								)
 							);
 						}
 						try {
@@ -372,7 +377,7 @@ final public class DiaImpl {
 							+ MISSING_IMAGE_PATH
 						;
 					}
-					document.img()
+					content.img()
 						.id(refId)
 						.src(response.encodeURL(URIEncoder.encodeURI(urlPath)))
 						.width(
@@ -388,7 +393,7 @@ final public class DiaImpl {
 							? height
 							: (MISSING_IMAGE_HEIGHT * width / MISSING_IMAGE_WIDTH)
 						).alt(dia.getLabel())
-						.__();
+					.__();
 					//if(resourceFile == null) {
 					//	LinkImpl.writeBrokenPathInXhtmlAttribute(pageRef, out);
 					//} else {
@@ -405,11 +410,8 @@ final public class DiaImpl {
 							// Get the thumbnail image in alternate pixel density
 							DiaExport altExport = exports.get(i);
 							// Write the a tag to additional pixel densities
-							document.out.write("<a id=\"" + ALT_LINK_ID_PREFIX);
 							long altLinkNum = idSequence.getNextSequenceValue();
 							altLinkNums[i] = altLinkNum;
-							encodeTextInXhtmlAttribute(Long.toString(altLinkNum), document.out);
-							document.out.write("\" style=\"display:none\" href=\"");
 							final String altUrlPath = buildUrlPath(
 								request,
 								pageRef,
@@ -418,16 +420,16 @@ final public class DiaImpl {
 								pixelDensity,
 								altExport
 							);
-							encodeTextInXhtmlAttribute(
-								response.encodeURL(URIEncoder.encodeURI(altUrlPath)),
-								document.out
+							content.a()
+								.id(id -> id.append(ALT_LINK_ID_PREFIX).append(Long.toString(altLinkNum)))
+								.style("display:none")
+								.href(response.encodeURL(URIEncoder.encodeURI(altUrlPath)))
+							.__(a -> a
+								.text('x').text(pixelDensity)
 							);
-							document.out.write("\">x");
-							document.text(pixelDensity);
-							document.out.write("</a>");
 						}
 						// Write script to hide alt links and select best based on device pixel ratio
-						try (MediaWriter script = document.script().out__()) {
+						try (MediaWriter script = content.script().out__()) {
 							// hide alt links
 							//for(int i=1; i<PIXEL_DENSITIES.length; i++) {
 							//	long altLinkNum = altLinkNums[i];
