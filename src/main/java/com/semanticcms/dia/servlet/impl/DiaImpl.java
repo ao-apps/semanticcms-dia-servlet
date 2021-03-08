@@ -473,7 +473,7 @@ final public class DiaImpl {
 							}
 							script.write("\t\t}\n"
 								+ "\t})();\n"
-								+ "}\n");
+								+ "}");
 						}
 					}
 				}
