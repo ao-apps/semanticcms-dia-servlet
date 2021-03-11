@@ -248,7 +248,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 			DiaHtmlRenderer.writeDiaImpl(servletContext,
 				request,
 				response,
-				(capturedOut == null) ? null : DocumentEE.get(servletContext, request, response, capturedOut),
+				(capturedOut == null) ? null : new DocumentEE(servletContext, request, response, capturedOut),
 				element
 			);
 		} finally {
