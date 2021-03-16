@@ -433,7 +433,7 @@ final public class DiaImpl {
 							);
 						}
 						// Write script to hide alt links and select best based on device pixel ratio
-						try (MediaWriter script = content.script().out__()) {
+						try (MediaWriter script = content.script()._c()) {
 							// hide alt links
 							//for(int i=1; i<PIXEL_DENSITIES.length; i++) {
 							//	long altLinkNum = altLinkNums[i];
