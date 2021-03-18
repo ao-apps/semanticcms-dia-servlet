@@ -27,7 +27,6 @@ import com.aoindustries.concurrent.KeyedConcurrencyReducer;
 import com.aoindustries.encoding.MediaWriter;
 import com.aoindustries.exception.WrappedException;
 import com.aoindustries.html.any.AnyA;
-import com.aoindustries.html.any.AnyDocument;
 import com.aoindustries.html.any.AnyIMG;
 import com.aoindustries.html.any.AnyPhrasingContent;
 import com.aoindustries.html.any.AnySCRIPT;
@@ -302,16 +301,13 @@ final public class DiaImpl {
 	}
 
 	/**
-	 * @param  <__>  {@link AnyPhrasingContent} provides {@link AnyIMG}, {@link AnyA}, and {@link AnySCRIPT}.
+	 * @param  content  {@link AnyPhrasingContent} provides {@link AnyIMG}, {@link AnyA}, and {@link AnySCRIPT}.
 	 */
-	public static <
-		D extends AnyDocument<D>,
-		__ extends AnyPhrasingContent<D, __>
-	> void writeDiaImpl(
+	public static void writeDiaImpl(
 		ServletContext servletContext,
 		HttpServletRequest request,
 		HttpServletResponse response,
-		__ content,
+		AnyPhrasingContent<?, ?> content,
 		Dia dia
 	) throws ServletException, IOException {
 		try {
