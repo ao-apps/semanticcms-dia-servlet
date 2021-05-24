@@ -36,8 +36,8 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		title="@{documented.name} Changelog"
 		shortTitle="Changelog"
 		tocLevels="1"
-		datePublished="2016-10-30T22:14:53-0500"
-		dateModified="2021-03-18T22:40:03-05:00"
+		datePublished="2016-10-30T22:14:53-05:00"
+		dateModified="2021-05-22T13:07:02-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -50,6 +50,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 				<ul>
 					<li>Added <core:link book="/core/model" page="/" /> domain support.</li>
 					<li>Added <core:link book="/core/pages" page="/" /> support.</li>
+					<li>Updated to <ao:a rel="nofollow" href="https://www.oracle.com/java/technologies/javaee/javaeetechnologies.html#javaee7">Java™ EE 7 Web Profile</ao:a> (Servlet 3.1, JSP 2.3, EL 3.0, and JSTL 1.2).</li>
 				</ul>
 			</changelog:release>
 		</c:if>
@@ -105,7 +106,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.6.0"
-			datePublished="2019-10-12T03:16:57-0500"
+			datePublished="2019-10-12T03:16:57-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -118,7 +119,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.5.1"
-			datePublished="2019-06-22T22:09:59-0500"
+			datePublished="2019-06-22T22:09:59-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -136,7 +137,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.5.0"
-			datePublished="2019-04-21T04:08:44-0500"
+			datePublished="2019-04-21T04:08:44-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -150,7 +151,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.4.3"
-			datePublished="2017-07-20T13:26:40-0500"
+			datePublished="2017-07-20T13:26:40-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -165,7 +166,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.4.2"
-			datePublished="2016-11-16T16:57:24-0600"
+			datePublished="2016-11-16T16:57:24-06:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -182,7 +183,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.4.1"
-			datePublished="2016-10-20T18:59:00-0500"
+			datePublished="2016-10-20T18:59:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -196,7 +197,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.4.0"
-			datePublished="2016-10-04T21:51:00-0500"
+			datePublished="2016-10-04T21:51:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -217,7 +218,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.3"
-			datePublished="2016-09-11T16:06:00-0500"
+			datePublished="2016-09-11T16:06:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -230,7 +231,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.2"
-			datePublished="2016-09-03T10:05:00-0500"
+			datePublished="2016-09-03T10:05:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -243,7 +244,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.1"
-			datePublished="2016-08-21T17:23:00-0500"
+			datePublished="2016-08-21T17:23:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -256,7 +257,7 @@ along with semanticcms-dia-servlet.  If not, see <http://www.gnu.org/licenses />
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.0"
-			datePublished="2016-08-19T14:54:00-0500"
+			datePublished="2016-08-19T14:54:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
