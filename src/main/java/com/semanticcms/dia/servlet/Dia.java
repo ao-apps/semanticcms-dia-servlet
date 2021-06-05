@@ -22,12 +22,12 @@
  */
 package com.semanticcms.dia.servlet;
 
-import com.aoindustries.encoding.taglib.EncodingBufferedTag;
-import com.aoindustries.html.servlet.DocumentEE;
-import com.aoindustries.io.buffer.BufferResult;
-import com.aoindustries.io.buffer.BufferWriter;
-import com.aoindustries.net.DomainName;
-import com.aoindustries.net.Path;
+import com.aoapps.encoding.taglib.EncodingBufferedTag;
+import com.aoapps.html.servlet.DocumentEE;
+import com.aoapps.io.buffer.BufferResult;
+import com.aoapps.io.buffer.BufferWriter;
+import com.aoapps.net.DomainName;
+import com.aoapps.net.Path;
 import com.semanticcms.core.model.ElementContext;
 import com.semanticcms.core.pages.CaptureLevel;
 import com.semanticcms.core.pages.local.PageContext;
