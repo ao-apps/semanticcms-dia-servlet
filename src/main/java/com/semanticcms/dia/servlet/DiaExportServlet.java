@@ -22,8 +22,8 @@
  */
 package com.semanticcms.dia.servlet;
 
-import com.aoindustries.io.ContentType;
-import com.aoindustries.io.FileUtils;
+import com.aoapps.lang.io.ContentType;
+import com.aoapps.lang.io.FileUtils;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.SemanticCMS;
