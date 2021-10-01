@@ -24,6 +24,7 @@ package com.semanticcms.dia.servlet;
 
 import com.aoapps.lang.io.ContentType;
 import com.aoapps.lang.io.FileUtils;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.SemanticCMS;
@@ -108,7 +109,7 @@ public class DiaExportServlet extends HttpServlet {
 				pageRef,
 				width,
 				height,
-				(File)getServletContext().getAttribute("javax.servlet.context.tempdir" /*ServletContext.TEMPDIR*/)
+				ScopeEE.Application.TEMPDIR.context(getServletContext()).get()
 			);
 		} catch(InterruptedException e) {
 			throw new ServletException(e);
