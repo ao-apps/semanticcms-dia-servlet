@@ -1,4 +1,4 @@
-# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/aoindustries) [SemanticCMS](https://github.com/aoindustries/semanticcms) / [Dia](https://github.com/aoindustries/semanticcms-dia) / [Servlet](https://github.com/aoindustries/semanticcms-dia-servlet)
+# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/ao-apps) [SemanticCMS](https://github.com/ao-apps/semanticcms) / [Dia](https://github.com/ao-apps/semanticcms-dia) / [Servlet](https://github.com/ao-apps/semanticcms-dia-servlet)
 
 [![project: current stable](https://semanticcms.com/ao-badges/project-current-stable.svg)](https://aoindustries.com/life-cycle#project-current-stable)
 [![management: production](https://semanticcms.com/ao-badges/management-production.svg)](https://aoindustries.com/life-cycle#management-production)
@@ -8,7 +8,7 @@
 [![semantic versioning: 2.0.0](https://semanticcms.com/ao-badges/semver-2.0.0.svg)](http://semver.org/spec/v2.0.0.html)
 [![license: LGPL v3](https://semanticcms.com/ao-badges/license-lgpl-3.0.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
-[![Build](https://github.com/aoindustries/semanticcms-dia-servlet/workflows/Build/badge.svg?branch=master)](https://github.com/aoindustries/semanticcms-dia-servlet/actions?query=workflow%3ABuild)
+[![Build](https://github.com/ao-apps/semanticcms-dia-servlet/workflows/Build/badge.svg?branch=master)](https://github.com/ao-apps/semanticcms-dia-servlet/actions?query=workflow%3ABuild)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.semanticcms/semanticcms-dia-servlet/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.semanticcms/semanticcms-dia-servlet)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.semanticcms%3Asemanticcms-dia-servlet&metric=alert_status)](https://sonarcloud.io/dashboard?branch=master&id=com.semanticcms%3Asemanticcms-dia-servlet)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.semanticcms%3Asemanticcms-dia-servlet&metric=ncloc)](https://sonarcloud.io/component_measures?branch=master&id=com.semanticcms%3Asemanticcms-dia-servlet&metric=ncloc)  
@@ -24,7 +24,7 @@ Java API for embedding [Dia-based diagrams](https://wiki.gnome.org/Apps/Dia/) in
 * [Changelog](https://semanticcms.com/dia/servlet/changelog)
 * [API Docs](https://semanticcms.com/dia/servlet/apidocs/)
 * [Maven Central Repository](https://search.maven.org/artifact/com.semanticcms/semanticcms-dia-servlet)
-* [GitHub](https://github.com/aoindustries/semanticcms-dia-servlet)
+* [GitHub](https://github.com/ao-apps/semanticcms-dia-servlet)
 
 ## Contact Us
 For questions or support, please [contact us](https://aoindustries.com/contact):
