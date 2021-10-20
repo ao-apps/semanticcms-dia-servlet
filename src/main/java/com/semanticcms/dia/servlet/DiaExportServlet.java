@@ -31,7 +31,6 @@ import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.dia.model.Dia;
 import com.semanticcms.dia.servlet.impl.DiaExport;
 import com.semanticcms.dia.servlet.impl.DiaImpl;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
