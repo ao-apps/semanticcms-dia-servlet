@@ -111,6 +111,8 @@ public class DiaExportServlet extends HttpServlet {
 				ScopeEE.Application.TEMPDIR.context(getServletContext()).get()
 			);
 		} catch(InterruptedException e) {
+			// Restore the interrupted status
+			Thread.currentThread().interrupt();
 			throw new ServletException(e);
 		} catch(FileNotFoundException e) {
 			return null;

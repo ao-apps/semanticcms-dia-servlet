@@ -478,6 +478,8 @@ public final class DiaImpl {
 				}
 			}
 		} catch(InterruptedException e) {
+			// Restore the interrupted status
+			Thread.currentThread().interrupt();
 			throw new ServletException(e);
 		}
 	}
