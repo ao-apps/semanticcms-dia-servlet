@@ -61,7 +61,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public final class DiaImpl {
+public abstract class DiaImpl {
+
+	/** Make no instances. */
+	private DiaImpl() {throw new AssertionError();}
 
 	private static final String LINUX_DIA_PATH = "/usr/bin/dia";
 
@@ -70,7 +73,7 @@ public final class DiaImpl {
 	// This was used for opening the diagram, moved to semanticcms-openfile-servlet to avoid dependency.
 	//private static final String WINDOWS_DIAW_PATH = "C:\\Program Files (x86)\\Dia\\bin\\diaw.exe";
 
-	private static class TempDirLock {}
+	private static class TempDirLock {/* Empty lock class to help heap profile */}
 	private static final TempDirLock tempDirLock = new TempDirLock();
 	private static final String TEMP_SUBDIR = DiaExport.class.getName();
 
@@ -482,11 +485,5 @@ public final class DiaImpl {
 			Thread.currentThread().interrupt();
 			throw new ServletException(e);
 		}
-	}
-
-	/**
-	 * Make no instances.
-	 */
-	private DiaImpl() {
 	}
 }
