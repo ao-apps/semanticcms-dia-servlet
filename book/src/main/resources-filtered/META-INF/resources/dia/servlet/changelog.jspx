@@ -37,7 +37,7 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T22:14:53-05:00"
-		dateModified="2022-02-16T21:03:45-06:00"
+		dateModified="2022-03-21T05:50:15-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -47,7 +47,11 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
 				artifactId="@{documented.artifactId}"
 				repository="@{nexusUrl}content/repositories/snapshots/"
 				scmUrl="@{project.scm.url}"
-			/>
+			>
+				<ul>
+					<li>Updated dependencies.</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release
