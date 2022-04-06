@@ -23,7 +23,7 @@
 package com.semanticcms.dia.servlet.impl;
 
 import com.aoapps.concurrent.KeyedConcurrencyReducer;
-import com.aoapps.encoding.MediaWriter;
+import com.aoapps.encoding.JavaScriptWriter;
 import com.aoapps.hodgepodge.awt.image.ImageSizeCache;
 import com.aoapps.html.any.AnyA;
 import com.aoapps.html.any.AnyIMG;
@@ -431,7 +431,7 @@ public final class DiaImpl {
 							);
 						}
 						// Write script to hide alt links and select best based on device pixel ratio
-						try (MediaWriter script = content.script()._c()) {
+						try (JavaScriptWriter script = content.script()._c()) {
 							// hide alt links
 							//for(int i=1; i<PIXEL_DENSITIES.length; i++) {
 							//	long altLinkNum = altLinkNums[i];
