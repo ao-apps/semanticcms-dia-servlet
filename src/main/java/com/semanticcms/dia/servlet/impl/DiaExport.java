@@ -27,29 +27,29 @@ import java.io.File;
 
 public final class DiaExport {
 
-	private final File tmpFile;
-	private final int width;
-	private final int height;
+  private final File tmpFile;
+  private final int width;
+  private final int height;
 
-	DiaExport(
-		File tmpFile,
-		int width,
-		int height
-	) {
-		this.tmpFile = tmpFile;
-		this.width = width;
-		this.height = height;
-	}
+  DiaExport(
+    File tmpFile,
+    int width,
+    int height
+  ) {
+    this.tmpFile = tmpFile;
+    this.width = width;
+    this.height = height;
+  }
 
-	public File getTmpFile() {
-		return tmpFile;
-	}
+  public File getTmpFile() {
+    return tmpFile;
+  }
 
-	public int getWidth() {
-		return width;
-	}
+  public int getWidth() {
+    return width;
+  }
 
-	public int getHeight() {
-		return height;
-	}
+  public int getHeight() {
+    return height;
+  }
 }
