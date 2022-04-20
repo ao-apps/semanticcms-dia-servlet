@@ -44,222 +44,226 @@ import javax.servlet.jsp.SkipPageException;
 
 public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 
-	public Dia(
-		ServletContext servletContext,
-		HttpServletRequest request,
-		HttpServletResponse response,
-		com.semanticcms.dia.model.Dia element,
-		String path
-	) {
-		super(
-			servletContext,
-			request,
-			response,
-			element
-		);
-		element.setPath(path);
-	}
+  public Dia(
+    ServletContext servletContext,
+    HttpServletRequest request,
+    HttpServletResponse response,
+    com.semanticcms.dia.model.Dia element,
+    String path
+  ) {
+    super(
+      servletContext,
+      request,
+      response,
+      element
+    );
+    element.setPath(path);
+  }
 
-	public Dia(
-		ServletContext servletContext,
-		HttpServletRequest request,
-		HttpServletResponse response,
-		String path
-	) {
-		this(
-			servletContext,
-			request,
-			response,
-			new com.semanticcms.dia.model.Dia(),
-			path
-		);
-	}
+  public Dia(
+    ServletContext servletContext,
+    HttpServletRequest request,
+    HttpServletResponse response,
+    String path
+  ) {
+    this(
+      servletContext,
+      request,
+      response,
+      new com.semanticcms.dia.model.Dia(),
+      path
+    );
+  }
 
-	public Dia(
-		ServletContext servletContext,
-		HttpServletRequest request,
-		HttpServletResponse response,
-		com.semanticcms.dia.model.Dia element,
-		Path book,
-		String path
-	) {
-		this(servletContext, request, response, element, path);
-		element.setBook(book);
-	}
+  public Dia(
+    ServletContext servletContext,
+    HttpServletRequest request,
+    HttpServletResponse response,
+    com.semanticcms.dia.model.Dia element,
+    Path book,
+    String path
+  ) {
+    this(servletContext, request, response, element, path);
+    element.setBook(book);
+  }
 
-	public Dia(
-		ServletContext servletContext,
-		HttpServletRequest request,
-		HttpServletResponse response,
-		Path book,
-		String path
-	) {
-		this(servletContext, request, response, path);
-		element.setBook(book);
-	}
+  public Dia(
+    ServletContext servletContext,
+    HttpServletRequest request,
+    HttpServletResponse response,
+    Path book,
+    String path
+  ) {
+    this(servletContext, request, response, path);
+    element.setBook(book);
+  }
 
-	public Dia(
-		ServletContext servletContext,
-		HttpServletRequest request,
-		HttpServletResponse response,
-		com.semanticcms.dia.model.Dia element,
-		DomainName domain,
-		Path book,
-		String path
-	) {
-		this(servletContext, request, response, element, book, path);
-		element.setDomain(domain);
-	}
+  public Dia(
+    ServletContext servletContext,
+    HttpServletRequest request,
+    HttpServletResponse response,
+    com.semanticcms.dia.model.Dia element,
+    DomainName domain,
+    Path book,
+    String path
+  ) {
+    this(servletContext, request, response, element, book, path);
+    element.setDomain(domain);
+  }
 
-	public Dia(
-		ServletContext servletContext,
-		HttpServletRequest request,
-		HttpServletResponse response,
-		DomainName domain,
-		Path book,
-		String path
-	) {
-		this(servletContext, request, response, book, path);
-		element.setDomain(domain);
-	}
+  public Dia(
+    ServletContext servletContext,
+    HttpServletRequest request,
+    HttpServletResponse response,
+    DomainName domain,
+    Path book,
+    String path
+  ) {
+    this(servletContext, request, response, book, path);
+    element.setDomain(domain);
+  }
 
-	/**
-	 * Creates a new diagram in the current page context.
-	 *
-	 * @see  PageContext
-	 */
-	public Dia(
-		com.semanticcms.dia.model.Dia element,
-		String path
-	) {
-		this(
-			PageContext.getServletContext(),
-			PageContext.getRequest(),
-			PageContext.getResponse(),
-			element,
-			path
-		);
-	}
+  /**
+   * Creates a new diagram in the current page context.
+   *
+   * @see  PageContext
+   */
+  public Dia(
+    com.semanticcms.dia.model.Dia element,
+    String path
+  ) {
+    this(
+      PageContext.getServletContext(),
+      PageContext.getRequest(),
+      PageContext.getResponse(),
+      element,
+      path
+    );
+  }
 
-	/**
-	 * Creates a new diagram in the current page context.
-	 *
-	 * @see  PageContext
-	 */
-	public Dia(String path) {
-		this(
-			PageContext.getServletContext(),
-			PageContext.getRequest(),
-			PageContext.getResponse(),
-			path
-		);
-	}
+  /**
+   * Creates a new diagram in the current page context.
+   *
+   * @see  PageContext
+   */
+  public Dia(String path) {
+    this(
+      PageContext.getServletContext(),
+      PageContext.getRequest(),
+      PageContext.getResponse(),
+      path
+    );
+  }
 
-	/**
-	 * Creates a new diagram in the current page context.
-	 *
-	 * @see  PageContext
-	 */
-	public Dia(
-		com.semanticcms.dia.model.Dia element,
-		Path book,
-		String path
-	) {
-		this(element, path);
-		element.setBook(book);
-	}
+  /**
+   * Creates a new diagram in the current page context.
+   *
+   * @see  PageContext
+   */
+  public Dia(
+    com.semanticcms.dia.model.Dia element,
+    Path book,
+    String path
+  ) {
+    this(element, path);
+    element.setBook(book);
+  }
 
-	/**
-	 * Creates a new diagram in the current page context.
-	 *
-	 * @see  PageContext
-	 */
-	public Dia(Path book, String path) {
-		this(path);
-		element.setBook(book);
-	}
+  /**
+   * Creates a new diagram in the current page context.
+   *
+   * @see  PageContext
+   */
+  public Dia(Path book, String path) {
+    this(path);
+    element.setBook(book);
+  }
 
-	/**
-	 * Creates a new diagram in the current page context.
-	 *
-	 * @see  PageContext
-	 */
-	public Dia(
-		com.semanticcms.dia.model.Dia element,
-		DomainName domain,
-		Path book,
-		String path
-	) {
-		this(element, book, path);
-		element.setDomain(domain);
-	}
+  /**
+   * Creates a new diagram in the current page context.
+   *
+   * @see  PageContext
+   */
+  public Dia(
+    com.semanticcms.dia.model.Dia element,
+    DomainName domain,
+    Path book,
+    String path
+  ) {
+    this(element, book, path);
+    element.setDomain(domain);
+  }
 
-	/**
-	 * Creates a new diagram in the current page context.
-	 *
-	 * @see  PageContext
-	 */
-	public Dia(DomainName domain, Path book, String path) {
-		this(book, path);
-		element.setDomain(domain);
-	}
+  /**
+   * Creates a new diagram in the current page context.
+   *
+   * @see  PageContext
+   */
+  public Dia(DomainName domain, Path book, String path) {
+    this(book, path);
+    element.setDomain(domain);
+  }
 
-	@Override
-	public Dia id(String id) {
-		super.id(id);
-		return this;
-	}
+  @Override
+  public Dia id(String id) {
+    super.id(id);
+    return this;
+  }
 
-	public Dia label(String label) {
-		element.setLabel(label);
-		return this;
-	}
+  public Dia label(String label) {
+    element.setLabel(label);
+    return this;
+  }
 
-	public Dia domain(DomainName domain) {
-		element.setDomain(domain);
-		return this;
-	}
+  public Dia domain(DomainName domain) {
+    element.setDomain(domain);
+    return this;
+  }
 
-	public Dia book(Path book) {
-		element.setBook(book);
-		return this;
-	}
+  public Dia book(Path book) {
+    element.setBook(book);
+    return this;
+  }
 
-	public Dia width(int width) {
-		element.setWidth(width);
-		return this;
-	}
+  public Dia width(int width) {
+    element.setWidth(width);
+    return this;
+  }
 
-	public Dia height(int height) {
-		element.setHeight(height);
-		return this;
-	}
+  public Dia height(int height) {
+    element.setHeight(height);
+    return this;
+  }
 
-	private BufferResult writeMe;
-	@Override
-	protected void doBody(CaptureLevel captureLevel, Body<? super com.semanticcms.dia.model.Dia> body) throws ServletException, IOException, SkipPageException {
-		super.doBody(captureLevel, body);
-		BufferWriter capturedOut;
-		if(captureLevel == CaptureLevel.BODY) {
-			capturedOut = EncodingBufferedTag.newBufferWriter(request);
-		} else {
-			capturedOut = null;
-		}
-		try {
-			DiaHtmlRenderer.writeDiaImpl(servletContext,
-				request,
-				response,
-				(capturedOut == null) ? null : new DocumentEE(servletContext, request, response, capturedOut),
-				element
-			);
-		} finally {
-			if(capturedOut != null) capturedOut.close();
-		}
-		writeMe = capturedOut==null ? null : capturedOut.getResult();
-	}
+  private BufferResult writeMe;
+  @Override
+  protected void doBody(CaptureLevel captureLevel, Body<? super com.semanticcms.dia.model.Dia> body) throws ServletException, IOException, SkipPageException {
+    super.doBody(captureLevel, body);
+    BufferWriter capturedOut;
+    if (captureLevel == CaptureLevel.BODY) {
+      capturedOut = EncodingBufferedTag.newBufferWriter(request);
+    } else {
+      capturedOut = null;
+    }
+    try {
+      DiaHtmlRenderer.writeDiaImpl(servletContext,
+        request,
+        response,
+        (capturedOut == null) ? null : new DocumentEE(servletContext, request, response, capturedOut),
+        element
+      );
+    } finally {
+      if (capturedOut != null) {
+        capturedOut.close();
+      }
+    }
+    writeMe = capturedOut == null ? null : capturedOut.getResult();
+  }
 
-	@Override
-	public void writeTo(Writer out, ElementContext context) throws IOException {
-		if(writeMe != null) writeMe.writeTo(out);
-	}
+  @Override
+  public void writeTo(Writer out, ElementContext context) throws IOException {
+    if (writeMe != null) {
+      writeMe.writeTo(out);
+    }
+  }
 }
