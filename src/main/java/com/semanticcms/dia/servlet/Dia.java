@@ -43,54 +43,54 @@ import javax.servlet.jsp.SkipPageException;
 public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 
   public Dia(
-    ServletContext servletContext,
-    HttpServletRequest request,
-    HttpServletResponse response,
-    com.semanticcms.dia.model.Dia element,
-    String path
+      ServletContext servletContext,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      com.semanticcms.dia.model.Dia element,
+      String path
   ) {
     super(
-      servletContext,
-      request,
-      response,
-      element
+        servletContext,
+        request,
+        response,
+        element
     );
     element.setPath(path);
   }
 
   public Dia(
-    ServletContext servletContext,
-    HttpServletRequest request,
-    HttpServletResponse response,
-    String path
+      ServletContext servletContext,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      String path
   ) {
     this(
-      servletContext,
-      request,
-      response,
-      new com.semanticcms.dia.model.Dia(),
-      path
+        servletContext,
+        request,
+        response,
+        new com.semanticcms.dia.model.Dia(),
+        path
     );
   }
 
   public Dia(
-    ServletContext servletContext,
-    HttpServletRequest request,
-    HttpServletResponse response,
-    com.semanticcms.dia.model.Dia element,
-    String book,
-    String path
+      ServletContext servletContext,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      com.semanticcms.dia.model.Dia element,
+      String book,
+      String path
   ) {
     this(servletContext, request, response, element, path);
     element.setBook(book);
   }
 
   public Dia(
-    ServletContext servletContext,
-    HttpServletRequest request,
-    HttpServletResponse response,
-    String book,
-    String path
+      ServletContext servletContext,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      String book,
+      String path
   ) {
     this(servletContext, request, response, path);
     element.setBook(book);
@@ -102,15 +102,15 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
    * @see  PageContext
    */
   public Dia(
-    com.semanticcms.dia.model.Dia element,
-    String path
+      com.semanticcms.dia.model.Dia element,
+      String path
   ) {
     this(
-      PageContext.getServletContext(),
-      PageContext.getRequest(),
-      PageContext.getResponse(),
-      element,
-      path
+        PageContext.getServletContext(),
+        PageContext.getRequest(),
+        PageContext.getResponse(),
+        element,
+        path
     );
   }
 
@@ -121,10 +121,10 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
    */
   public Dia(String path) {
     this(
-      PageContext.getServletContext(),
-      PageContext.getRequest(),
-      PageContext.getResponse(),
-      path
+        PageContext.getServletContext(),
+        PageContext.getRequest(),
+        PageContext.getResponse(),
+        path
     );
   }
 
@@ -134,9 +134,9 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
    * @see  PageContext
    */
   public Dia(
-    com.semanticcms.dia.model.Dia element,
-    String book,
-    String path
+      com.semanticcms.dia.model.Dia element,
+      String book,
+      String path
   ) {
     this(element, path);
     element.setBook(book);
@@ -179,6 +179,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
   }
 
   private BufferResult writeMe;
+
   @Override
   protected void doBody(CaptureLevel captureLevel, Body<? super com.semanticcms.dia.model.Dia> body) throws ServletException, IOException, SkipPageException {
     super.doBody(captureLevel, body);
@@ -190,11 +191,11 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
     }
     try {
       DiaImpl.writeDiaImpl(
-        servletContext,
-        request,
-        response,
-        (capturedOut == null) ? null : new DocumentEE(servletContext, request, response, capturedOut),
-        element
+          servletContext,
+          request,
+          response,
+          (capturedOut == null) ? null : new DocumentEE(servletContext, request, response, capturedOut),
+          element
       );
     } finally {
       if (capturedOut != null) {

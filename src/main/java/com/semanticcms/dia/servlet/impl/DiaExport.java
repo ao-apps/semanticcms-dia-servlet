@@ -32,9 +32,9 @@ public final class DiaExport {
   private final int height;
 
   DiaExport(
-    File tmpFile,
-    int width,
-    int height
+      File tmpFile,
+      int width,
+      int height
   ) {
     this.tmpFile = tmpFile;
     this.width = width;

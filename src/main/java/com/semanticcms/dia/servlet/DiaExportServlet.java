@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(DiaExportServlet.SERVLET_PATH+"/*")
+@WebServlet(DiaExportServlet.SERVLET_PATH + "/*")
 public class DiaExportServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
@@ -66,7 +66,7 @@ public class DiaExportServlet extends HttpServlet {
     if (dimSepPos == -1) {
       return null;
     }
-    String heightStr = pathInfo.substring(dimSepPos+1, pathInfo.length() - DiaImpl.PNG_EXTENSION.length());
+    String heightStr = pathInfo.substring(dimSepPos + 1, pathInfo.length() - DiaImpl.PNG_EXTENSION.length());
     //log("heightStr=" +heightStr);
     Integer height;
     if (heightStr.length() == 1 && heightStr.charAt(0) == DiaImpl.EMPTY_SIZE) {
@@ -80,11 +80,11 @@ public class DiaExportServlet extends HttpServlet {
     }
     //log("height=" +height);
     // Find width
-    int sizeSepPos = pathInfo.lastIndexOf(DiaImpl.SIZE_SEPARATOR, dimSepPos-1);
+    int sizeSepPos = pathInfo.lastIndexOf(DiaImpl.SIZE_SEPARATOR, dimSepPos - 1);
     if (sizeSepPos == -1) {
       return null;
     }
-    String widthStr = pathInfo.substring(sizeSepPos+1, dimSepPos);
+    String widthStr = pathInfo.substring(sizeSepPos + 1, dimSepPos);
     //log("widthStr=" +widthStr);
     Integer width;
     if (widthStr.length() == 1 && widthStr.charAt(0) == DiaImpl.EMPTY_SIZE) {
@@ -110,18 +110,18 @@ public class DiaExportServlet extends HttpServlet {
         return null;
       }
       pageRef = new PageRef(
-        book,
-        combinedPath.substring(book.getPathPrefix().length())
+          book,
+          combinedPath.substring(book.getPathPrefix().length())
       );
     }
 
     // Get the thumbnail image
     try {
       return DiaImpl.exportDiagram(
-        pageRef,
-        width,
-        height,
-        ScopeEE.Application.TEMPDIR.context(getServletContext()).get()
+          pageRef,
+          width,
+          height,
+          ScopeEE.Application.TEMPDIR.context(getServletContext()).get()
       );
     } catch (InterruptedException e) {
       // Restore the interrupted status
