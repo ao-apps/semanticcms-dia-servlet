@@ -81,6 +81,7 @@ public final class DiaImpl {
       // Empty lock class to help heap profile
     }
   }
+
   private static final TempDirLock tempDirLock = new TempDirLock();
   private static final String TEMP_SUBDIR = DiaExport.class.getName();
 
@@ -312,13 +313,14 @@ public final class DiaImpl {
           .append('?')
           .append(LastModifiedServlet.LAST_MODIFIED_PARAMETER_NAME)
           .append('=')
-          .append(LastModifiedServlet.encodeLastModified(export.getTmpFile().lastModified()))
-      ;
+          .append(LastModifiedServlet.encodeLastModified(export.getTmpFile().lastModified()));
     }
     return urlPath.toString();
   }
 
   /**
+   * Renders the diagram HTML.
+   *
    * @param  content  {@link AnyPhrasingContent} provides {@link AnyIMG}, {@link AnyA}, and {@link AnySCRIPT}.
    */
   public static void writeDiaImpl(
@@ -375,7 +377,7 @@ public final class DiaImpl {
           DiaExport export = exports == null ? null : exports.get(0);
           // Find id sequence
           Sequence idSequence = ID_SEQUENCE_REQUEST_ATTRIBUTE.context(request)
-              .computeIfAbsent(__ -> new UnsynchronizedSequence());
+              .computeIfAbsent(name -> new UnsynchronizedSequence());
           // Write the img tag
           String refId = PageIndex.getRefIdInPage(request, dia.getPage(), dia.getId());
           final String urlPath;
@@ -391,8 +393,7 @@ public final class DiaImpl {
           } else {
             urlPath =
                 request.getContextPath()
-                    + MISSING_IMAGE_PATH
-            ;
+                    + MISSING_IMAGE_PATH;
           }
           content.img()
               .id(refId)
@@ -427,7 +428,7 @@ public final class DiaImpl {
               // Get the thumbnail image in alternate pixel density
               DiaExport altExport = exports.get(i);
               // Write the a tag to additional pixel densities
-              long altLinkNum = idSequence.getNextSequenceValue();
+              final long altLinkNum = idSequence.getNextSequenceValue();
               altLinkNums[i] = altLinkNum;
               final String altUrlPath = buildUrlPath(
                   request,
@@ -442,14 +443,14 @@ public final class DiaImpl {
                   .style("display:none")
                   .href(response.encodeURL(URIEncoder.encodeURI(altUrlPath)))
                   .__(a -> a
-                          .text('x').text(pixelDensity)
+                      .text('x').text(pixelDensity)
                   );
             }
             // Write script to hide alt links and select best based on device pixel ratio
             try (JavaScriptWriter script = content.script()._c()) {
               // hide alt links
               //for (int i=1; i<PIXEL_DENSITIES.length; i++) {
-              //  long altLinkNum = altLinkNums[i];
+              //  final long altLinkNum = altLinkNums[i];
               //  scriptOut
               //    .write("document.getElementById(\"" + ALT_LINK_ID_PREFIX)
               //    .write(Long.toString(altLinkNum))
@@ -463,7 +464,7 @@ public final class DiaImpl {
               // Function to update src
               script.write("    function updateImageSrc() {\n");
               for (int i = PIXEL_DENSITIES.length - 1; i >= 0; i--) {
-                long altLinkNum = altLinkNums[i];
+                final long altLinkNum = altLinkNums[i];
                 script.write("      ");
                 if (i != (PIXEL_DENSITIES.length - 1)) {
                   script.write("else ");

@@ -103,17 +103,17 @@ public class DiaExportServlet extends HttpServlet {
     }
     // Find book and path
     PageRef pageRef;
-    {
-      String combinedPath = pathInfo.substring(0, sizeSepPos) + Dia.DOT_EXTENSION;
-      Book book = SemanticCMS.getInstance(getServletContext()).getBook(combinedPath);
-      if (book == null) {
-        return null;
+      {
+        String combinedPath = pathInfo.substring(0, sizeSepPos) + Dia.DOT_EXTENSION;
+        Book book = SemanticCMS.getInstance(getServletContext()).getBook(combinedPath);
+        if (book == null) {
+          return null;
+        }
+        pageRef = new PageRef(
+            book,
+            combinedPath.substring(book.getPathPrefix().length())
+        );
       }
-      pageRef = new PageRef(
-          book,
-          combinedPath.substring(book.getPathPrefix().length())
-      );
-    }
 
     // Get the thumbnail image
     try {
