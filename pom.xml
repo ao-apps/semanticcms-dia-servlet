@@ -46,7 +46,7 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
     <sonar.coverage.exclusions>**.*</sonar.coverage.exclusions>
   </properties>
 
-  <name>SemanticCMS Dia Servlet²</name>
+  <name>SemanticCMS Dia Servlet</name>
   <url>https://semanticcms.com/dia/servlet/</url>
   <description>Java API for embedding Dia-based diagrams in web pages in a Servlet environment.</description>
   <inceptionYear>2013</inceptionYear>
