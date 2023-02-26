@@ -23,7 +23,7 @@ Java API for embedding [Dia-based diagrams](https://wiki.gnome.org/Apps/Dia/) in
 * [Project Home](https://semanticcms.com/dia/servlet/)
 * [Changelog](https://semanticcms.com/dia/servlet/changelog)
 * [API Docs](https://semanticcms.com/dia/servlet/apidocs/)
-* [Maven Central Repository](https://search.maven.org/artifact/com.semanticcms/semanticcms-dia-servlet)
+* [Maven Central Repository](https://central.sonatype.com/search?namespace=com.semanticcms&q=a%3Asemanticcms-dia-servlet)
 * [GitHub](https://github.com/ao-apps/semanticcms-dia-servlet)
 
 ## Contact Us
