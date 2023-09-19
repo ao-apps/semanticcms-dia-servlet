@@ -41,6 +41,9 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
     <documented.artifactId>semanticcms-dia-servlet</documented.artifactId>
     <documented.name>SemanticCMS Dia Servlet</documented.name>
     <documented.description>Java API for embedding Dia-based diagrams in web pages in a Servlet environment.</documented.description>
+    <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>
+/ <a target="${javadoc.target}" href="https://semanticcms.com/dia/">Dia</a>
+/ <a target="${javadoc.target}" href="${project.url}">Servlet</a>]]></javadoc.breadcrumbs>
 
     <description.html><![CDATA[Documentation for <a target="${javadoc.target}" href="${project.url}">${documented.name}</a> in <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a> format.]]></description.html>
     <!-- SonarQube -->
