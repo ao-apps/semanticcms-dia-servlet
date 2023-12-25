@@ -1,6 +1,6 @@
 /*
  * semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -34,6 +34,7 @@ import com.semanticcms.core.pages.CaptureLevel;
 import com.semanticcms.core.pages.local.PageContext;
 import com.semanticcms.core.servlet.Element;
 import com.semanticcms.dia.renderer.html.DiaHtmlRenderer;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.Writer;
 import javax.servlet.ServletContext;
@@ -128,6 +129,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
    *
    * @see  PageContext
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public Dia(
       com.semanticcms.dia.model.Dia element,
       String path
@@ -146,6 +148,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
    *
    * @see  PageContext
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public Dia(String path) {
     this(
         PageContext.getServletContext(),
@@ -160,6 +163,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
    *
    * @see  PageContext
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public Dia(
       com.semanticcms.dia.model.Dia element,
       Path book,
@@ -174,6 +178,7 @@ public class Dia extends Element<com.semanticcms.dia.model.Dia> {
    *
    * @see  PageContext
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public Dia(Path book, String path) {
     this(path);
     element.setBook(book);
