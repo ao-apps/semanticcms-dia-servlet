@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
-Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
+Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -37,7 +37,7 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-30T22:14:53-05:00"
-    dateModified="2022-05-14T23:38:01-05:00"
+    dateModified="2024-08-31T19:37:53Z"
   >
     <c:set var="latestRelease" value="1.9.3" />
     <c:if test="${
@@ -56,6 +56,7 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
         <ul>
           <li>Added <core:link book="/core/model" page="/" /> domain support.</li>
           <li>Added <core:link book="/core/pages" page="/" /> support.</li>
+          <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_10.18.1">Checkstyle 10.18.1</ao:a>.</li>
         </ul>
       </changelog:release>
     </c:if>
