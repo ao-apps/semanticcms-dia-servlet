@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
-Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
+Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -354,7 +354,7 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-dia-renderer-html</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <dependency>
-        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.8.6</version>
+        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.9.0</version>
       </dependency>
       <!-- Transitive -->
       <dependency>
