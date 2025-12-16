@@ -28,9 +28,9 @@ def upstreamProjects = [
   '../parent', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-parent</artifactId>
 
   // Direct
-  '../../oss/encoding-taglib', // <groupId>com.aoapps</groupId><artifactId>ao-encoding-taglib</artifactId>
+  '../../oss/encoding-taglib-javaee', // <groupId>com.aoapps</groupId><artifactId>ao-encoding-taglib</artifactId>
   '../../oss/fluent-html-any', // <groupId>com.aoapps</groupId><artifactId>ao-fluent-html-any</artifactId>
-  '../../oss/fluent-html-servlet', // <groupId>com.aoapps</groupId><artifactId>ao-fluent-html-servlet</artifactId>
+  '../../oss/fluent-html-servlet-javaee', // <groupId>com.aoapps</groupId><artifactId>ao-fluent-html-servlet</artifactId>
   '../../oss/io-buffer', // <groupId>com.aoapps</groupId><artifactId>ao-io-buffer</artifactId>
   '../../oss/net-types', // <groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId>
   // No Jenkins: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
