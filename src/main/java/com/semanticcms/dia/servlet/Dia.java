@@ -1,6 +1,6 @@
 /*
  * semanticcms-dia-servlet - Java API for embedding Dia-based diagrams in web pages in a Servlet environment.
- * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2020, 2021, 2022, 2023, 2025  AO Industries, Inc.
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017, 2020, 2021, 2022, 2023, 2025, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -35,13 +35,13 @@ import com.semanticcms.core.pages.local.PageContext;
 import com.semanticcms.core.servlet.Element;
 import com.semanticcms.dia.renderer.html.DiaHtmlRenderer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.SkipPageException;
 import java.io.IOException;
 import java.io.Writer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.SkipPageException;
 
 public class Dia extends Element<com.semanticcms.dia.model.Dia> {
 
