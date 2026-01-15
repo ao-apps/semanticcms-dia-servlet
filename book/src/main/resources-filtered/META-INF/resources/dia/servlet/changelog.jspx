@@ -37,7 +37,7 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-30T22:14:53-05:00"
-    dateModified="2025-12-30T13:42:11Z"
+    dateModified="2026-01-15T22:52:15Z"
   >
     <c:set var="latestRelease" value="1.9.3" />
     <c:if test="${
@@ -57,7 +57,7 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
           <li>Updated to <ao:a href="https://jakarta.ee/specifications/webprofile/10/">Jakarta EE Web Profile 10</ao:a> (Servlet 6.0, JSP 3.1, EL 5.0, and JSTL 3.0).</li>
           <li>Added <core:link book="/core/model" page="/" /> domain support.</li>
           <li>Added <core:link book="/core/pages" page="/" /> support.</li>
-          <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_10.21.1">Checkstyle 10.21.1</ao:a>.</li>
+          <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_13.0.0">Checkstyle 13.0.0</ao:a>.</li>
         </ul>
       </changelog:release>
     </c:if>
