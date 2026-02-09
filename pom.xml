@@ -29,12 +29,12 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
     <relativePath>../../parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>com.semanticcms</groupId><artifactId>semanticcms-dia-servlet</artifactId><version>2.0.1</version>
+  <groupId>com.semanticcms</groupId><artifactId>semanticcms-dia-servlet</artifactId><version>2.0.1-POST-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
     <!-- Must be set to ${git.commit.time} for snapshots or ISO 8601 timestamp for releases. -->
-    <project.build.outputTimestamp>2026-02-09T22:10:21Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
     <module.name>com.semanticcms.dia.servlet</module.name>
     <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>
 / <a target="${javadoc.target}" href="https://semanticcms.com/dia/">Dia</a>
@@ -77,7 +77,7 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
     <connection>scm:git:git://github.com/ao-apps/semanticcms-dia-servlet.git</connection>
     <developerConnection>scm:git:git@github.com:ao-apps/semanticcms-dia-servlet.git</developerConnection>
     <url>https://github.com/ao-apps/semanticcms-dia-servlet</url>
-    <tag>semanticcms-dia-servlet-2.0.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
