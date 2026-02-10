@@ -37,9 +37,9 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-30T22:14:53-05:00"
-    dateModified="2026-01-15T22:52:15Z"
+    dateModified="2026-02-09T22:11:21Z"
   >
-    <c:set var="latestRelease" value="1.9.3" />
+    <c:set var="latestRelease" value="2.0.1" />
     <c:if test="${
       fn:endsWith('@{project.version}', '-SNAPSHOT')
       and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')
@@ -53,14 +53,26 @@ along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>
         scmUrl="@{project.scm.url}"
       >
         <ul>
-          <li>Minimum Java version changed from 11 to 17.</li>
-          <li>Updated to <ao:a href="https://jakarta.ee/specifications/webprofile/10/">Jakarta EE Web Profile 10</ao:a> (Servlet 6.0, JSP 3.1, EL 5.0, and JSTL 3.0).</li>
           <li>Added <core:link book="/core/model" page="/" /> domain support.</li>
           <li>Added <core:link book="/core/pages" page="/" /> support.</li>
-          <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_13.0.0">Checkstyle 13.0.0</ao:a>.</li>
         </ul>
       </changelog:release>
     </c:if>
+
+    <changelog:release
+      projectName="@{documented.name}"
+      version="2.0.1"
+      datePublished="2026-02-09T22:11:21Z"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Minimum Java version changed from 11 to 17.</li>
+        <li>Updated to <ao:a href="https://jakarta.ee/specifications/webprofile/10/">Jakarta EE Web Profile 10</ao:a> (Servlet 6.0, JSP 3.1, EL 5.0, and JSTL 3.0).</li>
+        <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_13.0.0">Checkstyle 13.0.0</ao:a>.</li>
+      </ul>
+    </changelog:release>
 
     <changelog:release
       projectName="@{documented.name}"
