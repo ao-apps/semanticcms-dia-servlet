@@ -133,15 +133,14 @@ public final class DiaImpl {
     }
   }
 
-  /* This was used for opening the diagram, moved to semanticcms-openfile-servlet to avoid dependency.
-  public static String getDiaOpenPath() {
-    if (isWindows()) {
-      return WINDOWS_DIAW_PATH;
-    } else {
-      return LINUX_DIA_PATH;
-    }
-  }
-   */
+  // This was used for opening the diagram, moved to semanticcms-openfile-servlet to avoid dependency.
+  // public static String getDiaOpenPath() {
+  //   if (isWindows()) {
+  //     return WINDOWS_DIAW_PATH;
+  //   } else {
+  //     return LINUX_DIA_PATH;
+  //   }
+  // }
 
   /**
    * Make sure each diagram and scaling is only exported once when under concurrent access.
@@ -206,7 +205,7 @@ public final class DiaImpl {
               final String diaExePath = getDiaExportPath();
               final String[] command;
               if (sizeParam == null) {
-                command = new String[]{
+                command = new String[] {
                     diaExePath,
                     "--export=" + tmpFile.getCanonicalPath(),
                     "--filter=png",
@@ -214,7 +213,7 @@ public final class DiaImpl {
                     diaFile.getCanonicalPath()
                 };
               } else {
-                command = new String[]{
+                command = new String[] {
                     diaExePath,
                     "--export=" + tmpFile.getCanonicalPath(),
                     "--filter=png",
