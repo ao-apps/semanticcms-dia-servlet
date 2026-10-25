@@ -21,8 +21,6 @@
  * along with semanticcms-dia-servlet.  If not, see <https://www.gnu.org/licenses/>.
  */
 module com.semanticcms.dia.servlet {
-  exports com.semanticcms.dia.servlet;
-  exports com.semanticcms.dia.servlet.impl;
   // Direct
   requires com.aoapps.concurrent; // <groupId>com.aoapps</groupId><artifactId>ao-concurrent</artifactId>
   requires com.aoapps.encoding; // <groupId>com.aoapps</groupId><artifactId>ao-encoding</artifactId>
@@ -42,4 +40,7 @@ module com.semanticcms.dia.servlet {
   requires com.semanticcms.dia.model; // <groupId>com.semanticcms</groupId><artifactId>semanticcms-dia-model</artifactId>
   // Java SE
   requires java.desktop;
+
+  exports com.semanticcms.dia.servlet;
+  exports com.semanticcms.dia.servlet.impl;
 }
